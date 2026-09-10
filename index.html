@@ -37,10 +37,11 @@ header{background:var(--panel);border-bottom:1px solid var(--border);position:st
 .tabs{display:flex;gap:4px;flex:1;max-width:540px;justify-content:center}
 .tab{font-family:var(--body);font-size:13px;font-weight:500;padding:8px 14px;border-radius:8px;
   border:1px solid transparent;background:transparent;color:var(--ink2);cursor:pointer;transition:.15s;white-space:nowrap}
-.tab:hover:not(:disabled){background:var(--bg2);color:var(--ink)}
+.tab:hover{background:var(--bg2);color:var(--ink)}
 .tab.on{background:var(--green-bg);color:var(--green);border-color:var(--green-l)}
-.tab:disabled{opacity:.35;cursor:not-allowed}
 .tab b{font-weight:600;margin-right:4px}
+.tab .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-left:6px;opacity:0;transition:.2s}
+.tab.ready .dot{opacity:1}
 
 .status{font-family:var(--mono);font-size:11px;color:var(--mut);display:flex;align-items:center;gap:8px;flex:none}
 .status i{width:7px;height:7px;border-radius:50%;background:var(--dim);flex:none}
@@ -68,8 +69,6 @@ aside::-webkit-scrollbar{width:5px}aside::-webkit-scrollbar-thumb{background:var
 .btn{font-family:var(--body);font-weight:500;font-size:12px;border-radius:8px;padding:8px 12px;cursor:pointer;border:1px solid var(--border);
   background:var(--panel);color:var(--ink2);transition:.15s;display:inline-flex;align-items:center;gap:6px}
 .btn:hover{background:var(--bg2);color:var(--ink);border-color:var(--border2)}
-.btn.prime{background:var(--green);border-color:var(--green);color:#fff}
-.btn.prime:hover{background:#244a32;color:#fff}
 .btn.wide{width:100%;justify-content:center}
 .filebadge{display:none;margin-top:10px;align-items:center;gap:8px;background:var(--green-bg);border:1px solid var(--green-l);
   border-radius:8px;padding:8px 11px;font-family:var(--mono);font-size:11px;color:var(--green)}
@@ -139,6 +138,7 @@ main{display:flex;flex-direction:column;gap:18px;min-width:0}
 .chart-panel .panelhead{margin-bottom:6px}
 .chart-body{position:relative;height:260px}
 .chart-panel.span2 .chart-body{height:300px}
+.chart-panel.tall .chart-body{height:340px}
 
 .scens{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .scen{background:var(--panel);border:1px solid var(--border);border-top:3px solid var(--ac);border-radius:var(--r);padding:14px 15px;box-shadow:var(--shadow);transition:.15s}
@@ -190,9 +190,6 @@ table.data th.c-opt{color:var(--green)} table.data th.c-neu{color:var(--amber)} 
   border-radius:8px;padding:6px 12px;font-family:var(--mono);font-size:11.5px;color:var(--green);margin-bottom:10px;font-weight:500}
 .model-badge b{font-weight:600;font-size:13px;color:var(--ink)}
 
-.empty{text-align:center;padding:28px 18px;color:var(--mut);font-family:var(--mono);font-size:11.5px;letter-spacing:.03em;border:1px dashed var(--border2);border-radius:8px;background:var(--panel2)}
-.empty svg{width:28px;height:28px;stroke:var(--border2);margin-bottom:8px;display:block;margin-inline:auto}
-
 footer{text-align:center;padding:22px 20px;border-top:1px solid var(--border);color:var(--mut);font-family:var(--mono);font-size:10.5px;letter-spacing:.04em}
 .toast{position:fixed;right:20px;bottom:20px;z-index:99;background:var(--panel);border:1px solid var(--coral);color:var(--ink);
   border-radius:10px;padding:12px 16px;font-size:13px;box-shadow:0 8px 24px rgba(20,20,18,.12);transform:translateY(16px);opacity:0;transition:.25s;pointer-events:none;max-width:360px}
@@ -211,9 +208,9 @@ footer{text-align:center;padding:22px 20px;border-top:1px solid var(--border);co
     <div><h1>Медиапланирование <em>· единая модель</em></h1><p>cpql · cpl · drr</p></div>
   </div>
   <div class="tabs" id="tabs">
-    <button class="tab on" data-tab="cpql"><b>1</b> CPQL прогноз</button>
-    <button class="tab" data-tab="cpl" id="tabCpl"><b>2</b> CPL модель</button>
-    <button class="tab" data-tab="drr" id="tabDrr"><b>3</b> DRR и прибыль</button>
+    <button class="tab on" data-tab="cpql"><b>1</b> CPQL прогноз<span class="dot"></span></button>
+    <button class="tab" data-tab="cpl" id="tabCpl"><b>2</b> CPL модель<span class="dot"></span></button>
+    <button class="tab" data-tab="drr" id="tabDrr"><b>3</b> DRR и прибыль<span class="dot"></span></button>
   </div>
   <span class="status" id="status"><i></i><span id="statusText">нет данных</span></span>
 </header>
@@ -356,7 +353,8 @@ function nelderMead(fn, x0, options={}){
 const S={
   rawRows:null,
   fileName:null,
-  series:null,        // агрегированные данные с revenue
+  series:null,        // агрегированные данные
+  hasRevenue:false,
   cpql:null,
   cpl:null,
   drr:null,
@@ -379,15 +377,23 @@ function setStatus(text,on){$('#statusText').textContent=text;$('#status').class
    ТАБЫ
 ============================================================ */
 $$('.tab').forEach(t=>t.addEventListener('click',()=>{
-  if(t.disabled)return;
+  switchTab(t.dataset.tab);
+}));
+
+function switchTab(tab){
+  S.tab=tab;
   $$('.tab').forEach(x=>x.classList.remove('on'));
-  t.classList.add('on');
-  const tab=t.dataset.tab;S.tab=tab;
+  document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('on');
   $$('.view').forEach(v=>v.classList.remove('on'));
   $('#v-'+tab).classList.add('on');
   renderSidebar();
-  renderView(tab);
-}));
+  // Если данные уже загружены — пересчитать модели с новыми параметрами сайдбара
+  if(S.series){
+    runAllModels();
+  } else {
+    renderView(tab);
+  }
+}
 
 function renderView(tab){
   if(tab==='cpql'){if(S.cpql)renderCpql();else renderCpqlEmpty();}
@@ -423,6 +429,7 @@ function loadRows(rowsRaw,name){
     }
     const hasQL=cols.includes('qualified_leads'),hasQR=cols.includes('qualification_rate');
     const hasRev=cols.includes('revenue');
+    const hasSales=cols.includes('sales');
     const df=[];let badDate=0;
     for(const r of rows){
       const d=parseDate(r.date);if(!d){badDate++;continue;}
@@ -432,7 +439,7 @@ function loadRows(rowsRaw,name){
         qualified_leads:hasQL?toNumber(r.qualified_leads):null,
         qualification_rate:hasQR?toNumber(r.qualification_rate):null,
         revenue:hasRev?toNumber(r.revenue):null,
-        sales:cols.includes('sales')?toNumber(r.sales):null};
+        sales:hasSales?toNumber(r.sales):null};
       df.push(row);
     }
     if(df.length<3)throw new Error('Слишком мало корректных строк (минимум 3)');
@@ -447,14 +454,14 @@ function loadRows(rowsRaw,name){
     }
     df.forEach(r=>{r.cpl=r.leads>0?r.spend/r.leads:NaN;r.cpql=r.qualified_leads>0?r.spend/r.qualified_leads:NaN;});
     S.rawRows=df;S.fileName=name;
+    S.hasRevenue=hasRev;
     logClear();
     log('ok',`Загружен файл <b>${name}</b> — строк: ${df.length}${badDate?`, пропущено: ${badDate}`:''}`);
     log('inf',`Период: ${fmtDFull(df[0].date)} — ${fmtDFull(df[df.length-1].date)}`);
-    log('inf',`Колонки: date, spend, leads${hasQL?', qualified_leads':''}${hasQR?', qualification_rate':''}${hasRev?', revenue':''}`);
+    log('inf',`Колонки: date, spend, leads${hasQL?', qualified_leads':''}${hasQR?', qualification_rate':''}${hasRev?', revenue':''}${hasSales?', sales':''}`);
     setStatus(`данные: ${df.length} строк · ${name}`,true);
-    $('#tabCpl').disabled=false;
-    $('#tabDrr').disabled=!hasRev;
-    if(!hasRev)log('warn','Колонка revenue не найдена — вкладка «DRR и прибыль» отключена');
+    // Активируем все вкладки
+    $$('.tab').forEach(t=>t.classList.add('ready'));
     aggregateAndRun();
   }catch(e){toast(e.message);log('err',e.message);}
 }
@@ -520,7 +527,7 @@ function renderSidebar(){
 function sidebarHTML(){
   return `
   <div class="panel">
-    <div class="sec"><b>01</b> Данные (единый файл)</div>
+    <div class="sec"><b>01</b> Единый файл</div>
     <div class="drop" tabindex="0">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0 4 4m-4-4-4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
       <b>Перетащите файл сюда</b>
@@ -531,18 +538,18 @@ function sidebarHTML(){
     <div class="filebadge"><i></i><b>${S.fileName||''}</b></div>
     <div class="btnrow">
       <button class="btn" data-act="demo">⚡ Демо</button>
-      <button class="btn" data-act="tpl">⤓ Шаблон CSV</button>
+      <button class="btn" data-act="tpl">⤓ Шаблон</button>
     </div>
   </div>
   <div class="panel">
-    <div class="sec"><b>02</b> Гранулярность данных</div>
+    <div class="sec"><b>02</b> Гранулярность</div>
     <div class="field"><label>Период для всех расчётов</label>
       <select id="gran">
-        <option value="raw"${S.series?'':' selected'}>Как в файле</option>
+        <option value="raw">Как в файле</option>
         <option value="week">Неделя</option>
         <option value="month" selected>Месяц</option>
       </select>
-      <small>Все три модели будут работать на одних агрегированных данных выбранной гранулярности</small></div>
+      <small>Все три модели работают на одних агрегированных данных</small></div>
   </div>
   ${sidebarTabParams()}
   <div class="panel"><div class="sec"><b>⌁</b> Лог анализа</div><div class="log" id="log"></div></div>
@@ -552,7 +559,7 @@ function sidebarHTML(){
 function sidebarTabParams(){
   if(S.tab==='cpql')return `
   <div class="panel">
-    <div class="sec"><b>03</b> CPQL — настройки</div>
+    <div class="sec"><b>03</b> CPQL — прогноз</div>
     <div class="field"><label>Последних периодов</label>
       <input type="number" id="inpWeeks" value="12" min="3" step="1">
       <label class="check"><input type="checkbox" id="chkAll"> Весь доступный период</label></div>
@@ -565,20 +572,20 @@ function sidebarTabParams(){
   if(S.tab==='cpl')return `
   <div class="panel">
     <div class="sec"><b>03</b> Unit-экономика (CPL)</div>
-    <div class="field"><label>Средний чек за продажу, ₽</label>
+    <div class="field"><label>Средний чек, ₽</label>
       <input type="number" id="cplCheck" value="165880" min="0" step="1000"></div>
     <div class="field"><label>Маржа (доля)</label>
       <input type="number" id="cplMargin" value="0.49" min="0" max="1" step="0.01"></div>
     <div class="field"><label>Конверсия лид → продажа</label>
       <input type="number" id="cplConv" value="0.05" min="0" max="1" step="0.01">
-      <small>Если в файле есть колонка <b>sales</b>, конверсия считается по данным</small></div>
+      <small>При наличии колонки <b>sales</b> — считается по данным</small></div>
     <div class="field"><label>Safe CPL (доля от max)</label>
       <input type="number" id="cplSafe" value="0.75" min="0.1" max="1" step="0.05">
       <small>safe CPL = max_cpl × этот коэффициент</small></div>
   </div>`;
   return `
   <div class="panel">
-    <div class="sec"><b>03</b> DRR — цели и маржа</div>
+    <div class="sec"><b>03</b> DRR — цели</div>
     <div class="field"><label>Целевой ДРР (доля)</label>
       <input type="number" id="drrTarget" value="0.25" min="0.01" max="1" step="0.01">
       <small>обычно 0.20–0.35</small></div>
@@ -593,11 +600,14 @@ function bindSidebar(){
     .forEach(id=>{const el=$('#'+id);if(el){el.addEventListener('input',recompute);el.addEventListener('change',recompute);}});
 }
 
+/* ============================================================
+   ГЛАВНЫЙ ЗАПУСК ВСЕХ МОДЕЛЕЙ
+============================================================ */
 function runAllModels(){
   if(!S.series)return;
   runCpql();
-  if(S.tab==='cpl')renderCpl();
-  if(S.rawRows.some(r=>isFinite(r.revenue)))runDrr();
+  runCpl();
+  if(S.hasRevenue)runDrr();else S.drr=null;
   renderView(S.tab);
 }
 
@@ -617,7 +627,7 @@ function runCpql(){
   if(valid.length>=3){
     const reg=linreg(valid.map(r=>Math.log(r.spend)),valid.map(r=>Math.log(r.qualified_leads)));
     if(reg){betaRaw=reg.slope;beta=Math.max(.5,Math.min(1,betaRaw));r2=reg.r*reg.r;intercept=reg.intercept;
-      log('ok',`[CPQL] β = ${fmt2(betaRaw)} → использую ${fmt2(beta)} (коридор 0.5–1.0), R² = ${fmt2(r2)}, точек: ${valid.length}`);}
+      log('ok',`[CPQL] β = ${fmt2(betaRaw)} → использую ${fmt2(beta)}, R² = ${fmt2(r2)}, точек: ${valid.length}`);}
   }else{log('warn','[CPQL] Мало данных для β — использую 1.00');}
   const ref=percentile(win.map(r=>r.spend),.5);
   if(!(ref>0)){S.cpql=null;return;}
@@ -653,18 +663,19 @@ function renderCpqlEmpty(){
   v.innerHTML=`
   <div class="ph reveal in">
     <div class="k">шаг 01 → 02 → 03</div>
-    <h2>Загрузите историю — получите <em>сценарный прогноз CPQL</em></h2>
+    <h2>Загрузите историю — получите <em>три модели сразу</em></h2>
     <div class="steps">
-      <div class="step"><b>01</b><span>Загрузите единый файл с датой, расходом, лидами и выручкой (или нажмите «Демо»)</span></div>
-      <div class="step"><b>02</b><span>Выберите гранулярность: все три модели работают на одних агрегированных данных</span></div>
-      <div class="step"><b>03</b><span>Модель оценит эластичность β, нормализует CPQL и построит три сценария</span></div>
+      <div class="step"><b>01</b><span>Загрузите единый файл (или нажмите «Демо»)</span></div>
+      <div class="step"><b>02</b><span>Данные автоматически агрегируются и подтянутся во все три вкладки</span></div>
+      <div class="step"><b>03</b><span>Переключайтесь между CPQL · CPL · DRR — параметры у каждой вкладки свои</span></div>
     </div>
     <div class="req"><h3>Требования к единому файлу</h3><table>
       <tr><td>date</td><td>дата периода</td></tr>
-      <tr><td>spend</td><td>рекламный расход за период, ₽</td></tr>
-      <tr><td>leads</td><td>количество лидов за период</td></tr>
+      <tr><td>spend</td><td>рекламный расход, ₽</td></tr>
+      <tr><td>leads</td><td>количество лидов</td></tr>
       <tr><td>qualified_leads</td><td>квалифицированные лиды <em>или</em> qualification_rate</td></tr>
-      <tr><td>revenue</td><td>выручка за период, ₽ (для вкладки «DRR и прибыль»)</td></tr>
+      <tr><td>revenue</td><td>выручка за период, ₽ (для DRR)</td></tr>
+      <tr><td>sales</td><td>продажи (опционально, для точной конверсии)</td></tr>
     </table></div>
   </div>`;
   observeReveals(v);
@@ -686,7 +697,7 @@ function renderCpql(){
   </div>
   <div class="kpis">
     <div class="kpi reveal" style="--ac:var(--green)"><span class="kpi-l">Эластичность β</span><span class="kpi-v" data-cu="${R.beta}" data-fmt="f2">0</span><span class="kpi-s">сырой ${fmt2(R.betaRaw)} · коридор 0.5–1.0</span></div>
-    <div class="kpi reveal" style="--ac:var(--blue)"><span class="kpi-l">R² модели</span><span class="kpi-v" data-cu="${R.r2}" data-fmt="f2">0</span><span class="kpi-s">${R.nValid} точек регрессии</span></div>
+    <div class="kpi reveal" style="--ac:var(--blue)"><span class="kpi-l">R² модели</span><span class="kpi-v" data-cu="${R.r2}" data-fmt="f2">0</span><span class="kpi-s">${R.nValid} точек</span></div>
     <div class="kpi reveal" style="--ac:var(--amber)"><span class="kpi-l">Опорный расход</span><span class="kpi-v" data-cu="${R.ref}" data-fmt="money">0</span><span class="kpi-s">медиана периода анализа</span></div>
     <div class="kpi reveal" style="--ac:var(--coral)"><span class="kpi-l">Средний CPQL</span><span class="kpi-v" data-cu="${R.stats.cpql}" data-fmt="money">0</span><span class="kpi-s">мин ${fmtMoney(R.stats.min)} · макс ${fmtMoney(R.stats.max)}</span></div>
     <div class="kpi reveal" style="--ac:var(--green)"><span class="kpi-l">Квалификация</span><span class="kpi-v" data-cu="${isFinite(R.avgQual)?R.avgQual*100:NaN}" data-fmt="pctv">0</span><span class="kpi-s">средний % за период</span></div>
@@ -804,25 +815,22 @@ function exportCpqlCsv(){const R=S.cpql;if(!R)return;
 ============================================================ */
 function runCpl(){
   if(!S.series){S.cpl=null;return;}
-  // берём агрегированные данные с spend>0 и leads>0
   const raw=S.series.filter(r=>r.spend>0&&r.leads>0).map(r=>({x:r.spend,y:r.leads,sales:r.sales})).sort((a,b)=>a.x-b.x);
-  if(raw.length<6){S.cpl={error:'Нужно минимум 6 наблюдений (бюджет × лиды) для устойчивой оценки.'};return;}
+  if(raw.length<6){S.cpl={error:`Нужно минимум 6 наблюдений, сейчас ${raw.length}. Попробуйте изменить гранулярность.`};return;}
   const uniq=new Set(raw.map(r=>r.x)).size;
-  if(uniq<4){S.cpl={error:'Мало разных уровней бюджета (нужно минимум 4) для кривой отклика.'};return;}
-  // unit-экономика
+  if(uniq<4){S.cpl={error:`Мало разных уровней бюджета (нужно минимум 4), сейчас ${uniq}.`};return;}
   const avgCheck=parseFloat($('#cplCheck')?.value)||165880;
   const margin=parseFloat($('#cplMargin')?.value)||0.49;
-  const conv=parseFloat($('#cplConv')?.value)||0.05;
+  const convDefault=parseFloat($('#cplConv')?.value)||0.05;
   const safeFactor=parseFloat($('#cplSafe')?.value)||0.75;
-  // Если есть колонка sales, считаем реальную конверсию
   const totalLeads=raw.reduce((s,r)=>s+r.y,0);
   const totalSales=raw.reduce((s,r)=>s+(r.sales||0),0);
-  const actualConv=totalSales>0&&totalLeads>0?totalSales/totalLeads:conv;
+  const actualConv=totalSales>0&&totalLeads>0?totalSales/totalLeads:convDefault;
   const convSource=totalSales>0?'по данным':'по настройке';
   const maxCPL=avgCheck*margin*actualConv;
   const safeCPL=maxCPL*safeFactor;
-  log('ok',`[CPL] Максимальный CPL: ${fmtMoney(maxCPL)} · Safe CPL: ${fmtMoney(safeCPL)} (×${safeFactor})`);
-  log('inf',`[CPL] Конверсия лид→продажа: ${pct(actualConv)} (${convSource})`);
+  log('ok',`[CPL] Макс. CPL: ${fmtMoney(maxCPL)} · Safe CPL: ${fmtMoney(safeCPL)} (×${safeFactor})`);
+  log('inf',`[CPL] Конверсия: ${pct(actualConv)} (${convSource})`);
   const x=raw.map(r=>r.x), y=raw.map(r=>r.y), n=x.length;
   const min_x=Math.min(...x),max_x=Math.max(...x);
   const sat_fn=(x,a,b)=>a*x/(b+x);
@@ -868,7 +876,7 @@ function runCpl(){
       validModels.push({name:c.name,fn:c.fn,df:c.df,params:[a,b],aic,mape,mae,rmse,rss:rss_,preds:fit});
     }catch(e){continue;}
   }
-  if(!validModels.length){S.cpl={error:'Не удалось подобрать экономически логичную модель отклика. Проверьте данные.'};return;}
+  if(!validModels.length){S.cpl={error:'Не удалось подобрать экономически логичную модель отклика. Попробуйте изменить гранулярность.'};return;}
   const bestAic=Math.min(...validModels.map(m=>m.aic));
   let best=validModels.find(m=>m.aic===bestAic);
   const sat=validModels.find(m=>m.name==='Saturation');
@@ -876,8 +884,7 @@ function runCpl(){
     best=sat;log('warn','[CPL] Приоритет Saturation: выбрана модель с конечной ёмкостью рынка.');
   }
   log('ok',`[CPL] Модель: <b>${best.name}</b> · AIC ${fmt2(best.aic)} · MAPE ${fmt1(best.mape)}% · RMSE ${fmt1(best.rmse)}`);
-  if(best.name==='Saturation')log('inf',`[CPL] Потолок рынка: ~${fmt0(best.params[0])} лидов за период`);
-  // Решение: df/dx = 1/target_cpl
+  if(best.name==='Saturation')log('inf',`[CPL] Потолок рынка: ~${fmt0(best.params[0])} лидов`);
   const solveTarget=(model,td)=>{
     const [a,b]=model.params;
     if(td<=0||a<=0)return null;
@@ -916,8 +923,8 @@ function runCpl(){
 function renderCplEmpty(){
   const v=$('#v-cpl');
   v.innerHTML=`<div class="ph reveal in"><div class="k">вкладка 2</div><h2>Модель отклика <em>лидов</em> на бюджет</h2>
-    <div class="steps"><div class="step"><b>01</b><span>Загрузите данные во вкладке «CPQL прогноз»</span></div>
-    <div class="step"><b>02</b><span>Задайте unit-экономику: средний чек, маржу, конверсию лид → продажа</span></div>
+    <div class="steps"><div class="step"><b>01</b><span>Загрузите единый файл во вкладке «CPQL прогноз»</span></div>
+    <div class="step"><b>02</b><span>Задайте unit-экономику в панели слева</span></div>
     <div class="step"><b>03</b><span>Модель подгонит три кривые (Saturation / Logarithmic / Power) и выберет лучшую по AIC</span></div></div></div>`;
   observeReveals(v);
 }
@@ -958,9 +965,9 @@ function renderCpl(){
     <div class="kpi reveal" style="--ac:var(--blue)"><span class="kpi-l">MAPE модели</span><span class="kpi-v" data-cu="${R.best.mape}" data-fmt="pctv">0</span><span class="kpi-s">${R.best.name} · ${R.raw.length} точек</span></div>
     <div class="kpi reveal" style="--ac:var(--coral)"><span class="kpi-l">σ остатков</span><span class="kpi-v" data-cu="${stdRes}" data-fmt="f0">0</span><span class="kpi-s">±1σ полоса на графике</span></div>
   </div>
-  <div class="chart-panel reveal">
+  <div class="chart-panel tall reveal">
     <div class="panelhead"><h3>Кривая отклика лидов · ${R.best.name}</h3><button class="ico" data-dl="cpl_1">⤓</button></div>
-    <div class="chart-body" style="height:340px"><canvas id="cpl_1"></canvas></div>
+    <div class="chart-body"><canvas id="cpl_1"></canvas></div>
   </div>
   <div class="scens">
     <div class="scen reveal" style="--ac:var(--green)">
@@ -1011,7 +1018,6 @@ function renderCpl(){
     countUp(el,val,fmt);});
   document.querySelectorAll('[data-dl^="cpl_"]').forEach(b=>b.addEventListener('click',()=>{
     const c=charts[b.dataset.dl];if(!c)return;const a=document.createElement('a');a.href=c.toBase64Image();a.download=b.dataset.dl+'.png';a.click();}));
-  // график
   const preds=x_plot.map(x=>R.best.fn(x,R.best.params[0],R.best.params[1]));
   charts.cpl_1=new Chart($('#cpl_1'),{type:'scatter',
     data:{datasets:[
@@ -1037,9 +1043,8 @@ function renderCpl(){
 ============================================================ */
 function runDrr(){
   if(!S.series){S.drr=null;return;}
-  // отбираем строки с revenue > 0 и spend > 0
   const pairs=S.series.filter(r=>isFinite(r.revenue)&&r.revenue>0&&r.spend>0).map(r=>({x:r.spend,y:r.revenue})).sort((a,b)=>a.x-b.x);
-  if(pairs.length<6){S.drr={error:'Нужно минимум 6 наблюдений с ненулевой выручкой.'};return;}
+  if(pairs.length<6){S.drr={error:`Нужно минимум 6 наблюдений с выручкой, сейчас ${pairs.length}.`};return;}
   const x=pairs.map(p=>p.x),y=pairs.map(p=>p.y),n=x.length;
   const min_x=Math.min(...x),max_x=Math.max(...x);
   const target_drr=parseFloat($('#drrTarget')?.value)||0.25;
@@ -1057,12 +1062,10 @@ function runDrr(){
   const ssTot=y.reduce((s,v)=>s+(v-mean(y))**2,0);
   const ssRes=residuals.reduce((s,r)=>s+r*r,0);
   const r2=1-ssRes/ssTot;
-  log('ok',`[DRR] Модель: MAPE ${fmt1(mape)}% · MAE ${fmtMoney(mae)} · RMSE ${fmtMoney(rmse)} · R² ${fmt2(r2)}`);
+  log('ok',`[DRR] Модель: MAPE ${fmt1(mape)}% · R² ${fmt2(r2)}`);
   log('inf',`[DRR] Потолок выручки: ~${fmtMoney(a)}`);
-  // Бюджет при среднем ДРР: x = target*a - b
   const budget_avg=target_drr*a-b;
   const budget_avg_ok=isFinite(budget_avg)&&budget_avg>0?budget_avg:null;
-  // Бюджет при предельном ДРР: x = sqrt(target*a*b) - b
   const val=target_drr*a*b;
   const budget_marg=val>0?Math.sqrt(val)-b:null;
   const budget_marg_ok=budget_marg!=null&&isFinite(budget_marg)&&budget_marg>0?budget_marg:null;
@@ -1073,9 +1076,8 @@ function runDrr(){
     return{label:'Рискованная экстраполяция',cls:'err'};
   };
   const r_avg=risk(budget_avg_ok,max_x),r_marg=risk(budget_marg_ok,max_x);
-  log('ok',`[DRR] Предельный бюджет (marginal DRR ${pct(target_drr)}): ${budget_marg_ok!=null?fmtMoney(budget_marg_ok):'—'} · ${r_marg.label}`);
-  log('ok',`[DRR] Отчётный лимит (average DRR ${pct(target_drr)}): ${budget_avg_ok!=null?fmtMoney(budget_avg_ok):'—'} · ${r_avg.label}`);
-  // Profit curve: profit = Rev*margin - Spend
+  log('ok',`[DRR] Предельный бюджет: ${budget_marg_ok!=null?fmtMoney(budget_marg_ok):'—'} · ${r_marg.label}`);
+  log('ok',`[DRR] Отчётный лимит: ${budget_avg_ok!=null?fmtMoney(budget_avg_ok):'—'} · ${r_avg.label}`);
   const maxPlot=Math.max(max_x*1.2,budget_avg_ok?budget_avg_ok*1.1:0,budget_marg_ok?budget_marg_ok*1.1:0);
   const x_profit=Array.from({length:400},(_,i)=>min_x+i*(maxPlot-min_x)/399);
   const profit=x_profit.map(x=>(a*x/(b+x))*margin-x);
@@ -1291,11 +1293,11 @@ function downloadTemplate(){const csv='\uFEFF'+[
   a.download='media_template.csv';a.click();URL.revokeObjectURL(a.href);}
 
 function resetAll(){
-  S.rawRows=null;S.series=null;S.fileName=null;S.cpql=null;S.cpl=null;S.drr=null;
+  S.rawRows=null;S.series=null;S.fileName=null;S.cpql=null;S.cpl=null;S.drr=null;S.hasRevenue=false;
   Object.keys(charts).forEach(k=>{charts[k].destroy();delete charts[k];});
   logClear();
   setStatus('нет данных',false);
-  $('#tabCpl').disabled=true;$('#tabDrr').disabled=true;
+  $$('.tab').forEach(t=>t.classList.remove('ready'));
   $$('.tab').forEach(t=>t.classList.remove('on'));
   document.querySelector('.tab[data-tab="cpql"]').classList.add('on');
   S.tab='cpql';
@@ -1307,13 +1309,10 @@ function resetAll(){
 /* ============================================================
    INIT
 ============================================================ */
-$('#tabCpl').disabled=true;$('#tabDrr').disabled=true;
 window.addEventListener('dragover',e=>e.preventDefault());
 window.addEventListener('drop',e=>e.preventDefault());
 renderSidebar();
 renderCpqlEmpty();
-renderCplEmpty();
-renderDrrEmpty();
 </script>
 </body>
 </html>

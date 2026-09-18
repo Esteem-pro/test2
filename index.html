@@ -143,10 +143,12 @@
     .goal-slider label{font-size:15px;margin-bottom:8px}
     .goal-slider input[type=range]{width:100%;accent-color:var(--green);height:6px}
     .goal-value{font-family:var(--mono);font-weight:700;color:var(--green)}
-    .scenarios-table{width:100%;margin-top:16px}
-    .scenarios-table th{text-align:left;padding:10px 8px;border-bottom:2px solid var(--line);font-size:12px;color:var(--mut)}
-    .scenarios-table td{padding:10px 8px;border-bottom:1px solid #eee;font-size:13px;text-align:left;vertical-align:top}
-    .scenario-status{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap}
+.scenarios-table{width:100%;margin-top:16px;table-layout:fixed;border-collapse:collapse}
+.scenarios-table th{text-align:left;padding:10px 8px;border-bottom:2px solid var(--line);font-size:12px;color:var(--mut);white-space:normal}
+.scenarios-table td{padding:10px 8px;border-bottom:1px solid #eee;font-size:13px;text-align:left;vertical-align:top;white-space:normal;overflow-wrap:anywhere}
+.scenarios-table td:not(:first-child){font-family:var(--mono)}
+.scenario-status{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:normal}
+.advisor{min-width:0}
     .status-ok{background:var(--green-light);color:var(--green)}
     .status-warn{background:var(--amber-light);color:var(--amber)}
     .status-bad{background:#fae9e6;color:var(--red)}
@@ -332,9 +334,12 @@ function economyField(key,label,{help='',required=false,value=null,min=0,max=nul
 function unitEconomyBase(){
   const e=S.economy;if(!e)return null;
   const first=e.mode==='first',revenueKnown=e.mode!=='ltv_profit';
-  return{e,first,revenueKnown,
-    revenuePerDeal:revenueKnown?(first?e.amount*S.unit.ltvMult:e.amount):null,
-    grossPerDeal:first?e.contribution*S.unit.ltvMult:e.contribution,
+  const margin=revenueKnown?e.margin:1;
+  const revenuePerDeal=revenueKnown?(first?e.amount*S.unit.ltvMult:e.amount):null;
+  const cogsPerDeal=revenuePerDeal!==null?revenuePerDeal*(1-margin):0;
+  const varPerDeal=revenuePerDeal!==null?revenuePerDeal*(S.unit.varPct/100):0;
+  const grossPerDeal=revenuePerDeal!==null?revenuePerDeal-cogsPerDeal-e.customerCost-varPerDeal:e.contribution;
+  return{e,first,revenueKnown,margin,revenuePerDeal,cogsPerDeal,varPerDeal,grossPerDeal,
     convDeal:e.conversion,perQL:e.contribution*e.conversion};
 }
 function getUnitMetrics(){
@@ -347,14 +352,18 @@ function getUnitMetrics(){
   const qualShare=u.qualShare!==null?u.qualShare:(f.leads>0?f.q/f.leads:0);
   const qlFunnel=leadsFunnel*qualShare;
   const deals=qlFunnel*b.convDeal;
-  const revenue=b.revenueKnown?deals*b.revenuePerDeal:null;
-  const varCosts=revenue!==null?revenue*(u.varPct/100):0;
-  const grossProfit=deals*b.grossPerDeal-varCosts;
+  const revenue=b.revenuePerDeal!==null?deals*b.revenuePerDeal:null;
+  const cogs=deals*b.cogsPerDeal;
+  const customerCosts=deals*b.e.customerCost;
+  const varCosts=deals*b.varPerDeal;
+  const grossProfit=deals*b.grossPerDeal;
   const netProfit=grossProfit-budget-u.fixedCosts;
   const romi=budget>0?((grossProfit-budget)/budget)*100:0;
   return{budget,impressions,clicks,leadsFunnel,leadsModel:f.leads,qualShare,qlFunnel,qModel:f.q,
-    convDeal:b.convDeal,deals,revenue,varCosts,grossProfit,marketingCost:budget,netProfit,romi,
-    cpql:f.cpql,perQL:b.perQL,revenuePerDeal:b.revenuePerDeal,grossPerDeal:b.grossPerDeal,revenueKnown:b.revenueKnown};
+    convDeal:b.convDeal,deals,revenue,cogs,customerCosts,varCosts,grossProfit,
+    marketingCost:budget,netProfit,romi,cpql:f.cpql,perQL:b.perQL,
+    revenuePerDeal:b.revenuePerDeal,grossPerDeal:b.grossPerDeal,revenueKnown:b.revenueKnown,
+    cogsPct:b.revenueKnown?(1-b.margin)*100:null};
 }
 
 // === Анализ цели собственника с оценкой шансов ===
@@ -458,6 +467,7 @@ function renderUnitEconomics(){
         <div class="metric-row section-head">🟦 Из формы экономики (менять там)</div>
         <div class="metric-row"><span>${b.first?'Средний чек':'LTV на клиента'}</span><span class="cell-blue">${money(b.e.amount)}</span></div>
         <div class="metric-row"><span>Маржинальность</span><span class="cell-blue">${b.e.mode==='ltv_profit'?'—':pct(b.e.margin)}</span></div>
+        <div class="metric-row"><span>Доля COGS (из маржи)</span><span class="cell-blue">${m.revenueKnown?m.cogsPct.toFixed(0)+'%':'—'}</span></div>
         <div class="metric-row"><span>Конверсия квал. → оплата</span><span class="cell-blue">${pct(b.convDeal)}</span></div>
         <div class="metric-row"><span>Вклад на сделку</span><span class="cell-blue">${money(b.grossPerDeal)}</span></div>
         <button type="button" data-open-economy style="margin-top:12px;width:100%">Изменить чек, маржу, конверсию</button>
@@ -479,7 +489,9 @@ function renderUnitEconomics(){
           <span style="font-weight:700">${m.revenueKnown?'💰 ВЫРУЧКА':'💰 МАРЖ. ПРИБЫЛЬ КОГОРТЫ'}</span>
           <span class="cell-yellow">${m.revenueKnown?money(m.revenue):money(m.grossProfit)}</span>
         </div>
-        <div class="metric-row section-head">P&L</div>
+                <div class="metric-row section-head">P&L</div>
+        ${m.revenueKnown?`<div class="metric-row"><span>− Себестоимость товаров (COGS, ${m.cogsPct.toFixed(0)}% выручки)</span><span class="cell-blue">−${money(m.cogs)}</span></div>`:''}
+        <div class="metric-row"><span>− Доп. затраты на клиента</span><span class="cell-blue">−${money(m.customerCosts)}</span></div>
         <div class="metric-row"><span>− Переменные на сделки (${u.varPct}%)</span><span class="cell-blue">−${money(m.varCosts)}</span></div>
         <div class="metric-row total"><span>Маржинальная прибыль</span><span class="${m.grossProfit>=0?'cell-green':'cell-red'}">${money(m.grossProfit)}</span></div>
         <div class="metric-row"><span>− Реклама (бюджет)</span><span class="cell-blue">−${money(m.marketingCost)}</span></div>
@@ -513,7 +525,8 @@ function renderUnitEconomics(){
       `:goal&&goal.status==='deficit'?`
         <div class="advisor">
           <h4>📊 Дефицит: ${money(goal.gap)} · выручка должна вырасти в ${goal.ratio.toFixed(2)} раза</h4>
-          <table class="scenarios-table">
+                    <table class="scenarios-table">
+            <colgroup><col style="width:19%"><col style="width:25%"><col style="width:37%"><col style="width:19%"></colgroup>
             <thead><tr><th>Рычаг</th><th>Требуется</th><th>Потолок за 1 месяц</th><th>Шансы</th></tr></thead>
             <tbody>
               ${goal.insights.map(i=>`<tr>

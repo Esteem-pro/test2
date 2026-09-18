@@ -14,7 +14,7 @@
     button{cursor:pointer;color:var(--ink);background:white;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:14px;font-weight:500}
     button:hover{border-color:var(--green);background:var(--green-light)}
     button:disabled{opacity:.5;cursor:wait}
-    button:focus-visible,a:focus-visible,input:focus-visible,.drop:focus-within{outline:3px solid #80ac8b;outline-offset:2px}
+    button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #80ac8b;outline-offset:2px}
     header{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:18px 28px;background:white;border-bottom:1px solid var(--line);flex-wrap:wrap}
     .brand{display:flex;gap:11px;align-items:center}
     .mark{display:grid;place-items:center;width:38px;height:38px;border-radius:9px;background:var(--green);color:white;font-size:29px}
@@ -66,7 +66,6 @@
     .value{font:600 clamp(23px,2.4vw,34px) var(--mono);letter-spacing:-.045em;margin:13px 0;overflow-wrap:anywhere}
     .kpi small{font-size:13px;color:var(--mut);display:block}
     .feature small{color:#d8e8db}
-    .kpi .subvalue{font:15px var(--mono);margin-top:10px}
     .row{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
     .chart{width:100%;display:block;height:auto}
     .chart text{font-family:var(--mono);font-size:12px;fill:var(--mut)}
@@ -83,12 +82,12 @@
     td:not(:first-child){font-family:var(--mono)}
     tr.selected{background:var(--green-light)}
     .statrow{display:flex;justify-content:space-between;gap:20px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+    .statrow:last-child{border-bottom:0}
     .statrow b{font-family:var(--mono);text-align:right}
     .method p,.method li{color:#48594e}
     .method h3{margin:24px 0 10px}
     .method h3:first-child{margin-top:0}
     .method a{color:var(--green)}
-    .method code{background:#f0f4ee;padding:2px 5px;border-radius:4px;font-size:14px}
     .loading{padding:45px;text-align:center}
     .loading p{color:var(--mut)}
     footer{border-top:1px solid var(--line);text-align:center;padding:19px;color:var(--mut);font-size:12px}
@@ -112,8 +111,6 @@
     .kpi .value{line-height:1.25}
     #economy-form .primary{margin-top:10px;padding:12px 18px}
     @media(max-width:620px){.econ-fields{grid-template-columns:1fr}}
-    #economy-results{grid-template-columns:minmax(0,1fr)}
-    #economy-results>*{min-width:0}
     .econ-field{min-width:0}
 
     /* === P&L И ВОРОНКА === */
@@ -121,41 +118,39 @@
     @media(max-width:1000px){.pnl-grid{grid-template-columns:1fr}}
     .pnl-card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 2px 4px rgba(0,0,0,.02)}
     .pnl-card h3{margin-top:0;border-bottom:2px solid var(--line);padding-bottom:12px;font-size:15px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
-    .pnl-card h3:not(:first-child){margin-top:22px}
-    .metric-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px dashed #eee;font-size:14px}
+    .metric-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px dashed #eee;font-size:14px;gap:10px}
     .metric-row:last-child{border-bottom:none}
     .metric-row.total{font-weight:700;font-size:17px;border-top:2px solid var(--ink);margin-top:10px;padding-top:14px;border-bottom:none}
-    .metric-row.section-head{border-bottom:2px solid var(--line);padding-bottom:8px;font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);margin-top:8px}
+    .metric-row.section-head{border-bottom:2px solid var(--line);padding-bottom:8px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);margin-top:8px}
     .metric-row.highlight-row{background:#fff9e6;margin:8px -24px;padding:12px 24px;border-radius:0}
-    .cell-white{color:var(--ink)}
     .cell-blue{color:#2a5c8b;font-weight:500;font-family:var(--mono);font-size:14px}
     .cell-yellow{color:#8a6d00;font-weight:700;background:#fff9e6;padding:4px 10px;border-radius:6px;font-family:var(--mono);font-size:18px}
     .cell-green{color:#2d5a3d;font-weight:700;font-family:var(--mono)}
     .cell-red{color:#a33d38;font-weight:700;font-family:var(--mono)}
-    .pnl-input{width:120px;text-align:right;border:1px solid #d7ddd6;border-radius:6px;padding:7px 10px;font-family:var(--mono);font-size:13px;background:#fff}
+    .pnl-input{width:110px;text-align:right;border:1px solid #d7ddd6;border-radius:6px;padding:7px 10px;font-family:var(--mono);font-size:13px;background:#fff}
     .pnl-input:focus{border-color:var(--green);outline:none;box-shadow:0 0 0 3px rgba(45,90,61,.1)}
     .pnl-input-suffix{margin-left:4px;color:var(--mut);font-size:12px}
     .advisor{background:#f8f9fa;border-left:4px solid var(--blue);padding:20px;border-radius:8px;margin-top:24px}
     .advisor h4{margin:0 0 12px;color:var(--blue);font-size:16px}
     .advisor ul{margin:0;padding-left:20px;line-height:1.6}
-    .advisor li{margin-bottom:12px;color:#333}
+    .advisor li{margin-bottom:14px;color:#333}
     .advisor .highlight{background:#e8f0fe;padding:2px 6px;border-radius:4px;font-family:var(--mono);font-weight:600}
     .advisor .warning{color:#a33d38;font-weight:600;display:block;margin-top:4px;font-size:13px}
     .advisor .success{color:#2d5a3d;font-weight:600;display:block;margin-top:4px;font-size:13px}
     .advisor .recommendation{color:var(--blue);font-style:italic;display:block;margin-top:4px;font-size:13px}
+    .advisor .ceiling{color:var(--mut);display:block;margin-top:3px;font-size:13px}
     .goal-slider{margin:20px 0}
     .goal-slider label{font-size:15px;margin-bottom:8px}
     .goal-slider input[type=range]{width:100%;accent-color:var(--green);height:6px}
     .goal-value{font-family:var(--mono);font-weight:700;color:var(--green)}
     .scenarios-table{width:100%;margin-top:16px}
     .scenarios-table th{text-align:left;padding:10px 8px;border-bottom:2px solid var(--line);font-size:12px;color:var(--mut)}
-    .scenarios-table td{padding:10px 8px;border-bottom:1px solid #eee;font-size:13px;text-align:left}
-    .scenario-status{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600}
+    .scenarios-table td{padding:10px 8px;border-bottom:1px solid #eee;font-size:13px;text-align:left;vertical-align:top}
+    .scenario-status{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap}
     .status-ok{background:var(--green-light);color:var(--green)}
     .status-warn{background:var(--amber-light);color:var(--amber)}
     .status-bad{background:#fae9e6;color:var(--red)}
     .funnel-arrow{text-align:center;color:var(--mut);font-size:11px;padding:2px 0}
-    .funnel-section{margin-bottom:4px}
   </style>
 </head>
 <body>
@@ -311,281 +306,204 @@ S.economyDraft={mode:'first',check:'111291',margin:'49',conversion:'10.4',ltv:'1
 S.economySnapshot=structuredClone(S.economyDraft);
 S.economy=BC.normalize({mode:'first',amount:111291,margin:.49,conversion:.104,reserve:0,costsComplete:false});
 
-// === ЮНИТ-ЭКОНОМИКА: ПОЛНАЯ ВОРОНКА ===
-S.unit={
-  cpc:45,            // Средняя стоимость клика, ₽
-  ctr:5,             // CTR, %
-  siteConv:3,        // Конверсия сайта (клик → лид), %
-  qualShare:null,    // Доля квал. лидов (null = из прогноза)
-  convQLDeal:null,   // Конверсия квал.лид → сделка (null = из прогноза)
-  check:5000,        // Средний чек
-  ltvMult:1.2,       // Множитель LTV
-  cogsPct:40,        // Себестоимость %
-  varPct:5,          // Переменные на сделку %
-  fixedCosts:300000, // Постоянные расходы
-  targetRevenue:null // Цель собственника
+// === Юнит-экономика: ввод только того, чего нет в форме экономики продукта ===
+S.unit={cpc:80,ctr:5,siteConv:2.8,qualShare:null,ltvMult:1,varPct:5,fixedCosts:300000,targetRevenue:null};
+
+// === Зоны реалистичности изменений за 1 месяц (относительные) ===
+const LEVERS={
+  budget:{ok:.30,hard:.60},
+  siteConv:{ok:.15,hard:.35,absHard:12,absBad:20},   // % сайта
+  convDeal:{ok:.15,hard:.30,absHard:.50,absBad:.70}, // доли
+  cpc:{ok:.10,hard:.20,absHard:15,absBad:8},         // ₽, пол
+  check:{ok:.10,hard:.25}
 };
+const CHANCE={ok:'Шансы высокие',hard:'Шансы средние',bad:'Шансы низкие'};
+const STATUS_LABEL={ok:'Реалистично',hard:'На пределе',bad:'Нереально за месяц'};
+function grade(rel,b){return rel<=b.ok?'ok':rel<=b.hard?'hard':'bad'}
+function applyAbs(s,val,b,up){if(up){if(val>b.absBad)return'bad';if(val>b.absHard&&s==='ok')return'hard'}else{if(val<b.absBad)return'bad';if(val<b.absHard&&s==='ok')return'hard'}return s}
+const rp=x=>(x*100).toFixed(0)+'%';
 
 function forecastWithEconomics(analysis,rows,settings,economy=S.economy){const base=E.forecast(analysis,rows,{...settings,target:economy?null:settings.target});return economy?BC.attach(E,base,analysis,rows,economy):base}
 function economyRatio(){return S.result?(S.result.current.leads>0?S.result.current.q/S.result.current.leads:0):S.economy?.qualification??null}
 function economySidebar(){const e=S.economy;if(!e)return;const cap=BC.caps(e,economyRatio());$('#target').value=cap.working.cpql===null?'':Math.round(cap.working.cpql);$('#econ-side').innerHTML=`${row('Допустимый CPQL',money(cap.working.cpql))}${row('Допустимый CPL',money(cap.working.cpl))}<p class="hint">${S.result?'CPL учитывает долю квал. лидов в выбранном прогнозе.':'Для CPL загрузите историю.'} ${!e.costsComplete?'Другие расходы не подтверждены — лимиты предварительные.':''}</p>`}
 function economyField(key,label,{help='',required=false,value=null,min=0,max=null,step='any',disabled=false}={}){const d=S.economyDraft;return`<div class="econ-field"><label for="econ-${key}">${label}</label><input id="econ-${key}" data-econ="${key}" type="number" min="${min}" ${max===null?'':`max="${max}"`} step="${step}" value="${esc(value===null?d[key]:value)}" ${required?'required':''} ${disabled?'disabled':''}>${help?`<p class="hint">${help}</p>`:''}</div>`}
 
-// === РАСЧЁТ ПОЛНОЙ ВОРОНКИ И P&L ===
+// === Единая база экономики продукта для P&L ===
+function unitEconomyBase(){
+  const e=S.economy;if(!e)return null;
+  const first=e.mode==='first',revenueKnown=e.mode!=='ltv_profit';
+  return{e,first,revenueKnown,
+    revenuePerDeal:revenueKnown?(first?e.amount*S.unit.ltvMult:e.amount):null,
+    grossPerDeal:first?e.contribution*S.unit.ltvMult:e.contribution,
+    convDeal:e.conversion,perQL:e.contribution*e.conversion};
+}
 function getUnitMetrics(){
   if(!S.result)return null;
+  const b=unitEconomyBase();if(!b)return null;
   const u=S.unit,f=S.result.current,budget=f.budget;
-  
-  // Воронка: Бюджет → Клики → Лиды → Квал.лиды → Сделки
   const clicks=u.cpc>0?budget/u.cpc:0;
   const impressions=u.ctr>0?clicks/(u.ctr/100):0;
-  const leadsFromFunnel=clicks*(u.siteConv/100);
-  
-  // Доля квал. лидов и конверсия в сделку
+  const leadsFunnel=clicks*(u.siteConv/100);
   const qualShare=u.qualShare!==null?u.qualShare:(f.leads>0?f.q/f.leads:0);
-  const convQLDeal=u.convQLDeal!==null?u.convQLDeal:(f.leads>0?f.q/f.leads:0);
-  
-  // Из прогноза (статистическая модель)
-  const qFromModel=f.q;
-  const leadsFromModel=f.leads;
-  
-  // Из воронки
-  const qlFromFunnel=leadsFromFunnel*qualShare;
-  const deals=qlFromFunnel*convQLDeal;
-  const revenue=deals*u.check*u.ltvMult;
-  
-  // P&L
-  const cogs=revenue*(u.cogsPct/100);
-  const varCosts=revenue*(u.varPct/100);
-  const grossProfit=revenue-cogs-varCosts;
-  const marketingCost=budget;
-  const netProfit=grossProfit-marketingCost-u.fixedCosts;
-  const romi=marketingCost>0?((grossProfit-marketingCost)/marketingCost)*100:0;
-  const marginPct=revenue>0?(netProfit/revenue)*100:0;
-  
-  return{
-    budget,impressions,clicks,cpc:u.cpc,ctr:u.ctr,
-    leadsFromFunnel,leadsFromModel,
-    qlFromFunnel,qFromModel,qualShare,convQLDeal,
-    deals,revenue,cogs,varCosts,grossProfit,marketingCost,netProfit,romi,marginPct,
-    cpql:f.cpql,cpl:f.leads>0?budget/f.leads:0
-  };
+  const qlFunnel=leadsFunnel*qualShare;
+  const deals=qlFunnel*b.convDeal;
+  const revenue=b.revenueKnown?deals*b.revenuePerDeal:null;
+  const varCosts=revenue!==null?revenue*(u.varPct/100):0;
+  const grossProfit=deals*b.grossPerDeal-varCosts;
+  const netProfit=grossProfit-budget-u.fixedCosts;
+  const romi=budget>0?((grossProfit-budget)/budget)*100:0;
+  return{budget,impressions,clicks,leadsFunnel,leadsModel:f.leads,qualShare,qlFunnel,qModel:f.q,
+    convDeal:b.convDeal,deals,revenue,varCosts,grossProfit,marketingCost:budget,netProfit,romi,
+    cpql:f.cpql,perQL:b.perQL,revenuePerDeal:b.revenuePerDeal,grossPerDeal:b.grossPerDeal,revenueKnown:b.revenueKnown};
 }
 
-// === АНАЛИЗ ЦЕЛИ ===
+// === Анализ цели собственника с оценкой шансов ===
 function analyzeGoal(targetRev){
-  const m=getUnitMetrics();
-  if(!m||!targetRev)return null;
-  const gap=targetRev-m.revenue;
-  if(gap<=0)return{gap,insights:[],status:'surplus'};
-  
-  const u=S.unit,insights=[];
-  const reqDeals=targetRev/(u.check*u.ltvMult);
-  
-  // Сценарий 1: Бюджет
-  let reqBudget=m.budget;
-  if(u.cpc>0&&u.siteConv>0&&m.convQLDeal>0&&m.qualShare>0){
-    const reqClicks=reqDeals/(m.convQLDeal*m.qualShare*(u.siteConv/100));
-    reqBudget=Math.round(reqClicks*u.cpc);
-  }else{
-    reqBudget=Math.round(m.budget*(reqDeals/(m.deals||1)));
-  }
-  const p90=S.result?.upper||Infinity;
-  const budgetGrowth=m.budget>0?((reqBudget/m.budget-1)*100):0;
-  const budgetOk=reqBudget<=p90*1.3;
-  insights.push({type:'budget',title:'📈 Увеличить бюджет',
-    text:`Бюджет до <span class="highlight">${money(reqBudget)}</span> (+${budgetGrowth.toFixed(0)}%)`,
-    detail:`→ ${fmt(reqBudget/u.cpc)} кликов → ${fmt(reqBudget/u.cpc*(u.siteConv/100))} лидов → ${fmt(reqDeals)} сделок`,
-    feasible:budgetOk,
-    note:!budgetOk?`Требуемый бюджет ${money(reqBudget)} > P90 истории (${money(p90)}). Рынок может не дать объём без роста CPC.`:budgetGrowth>50?'Рост >50% лучше делать постепенно, контролируя CPC и CPQL еженедельно.':'Умеренный рост, контролируйте стабильность CPC.',
-    recommendation:budgetGrowth>100?'Разбейте рост на 3-4 недели. При росте >100% за месяц CPC обычно растёт на 15-30%.':'Проверьте, что дневной лимит в Директе не ограничивает показы.'});
-  
-  // Сценарий 2: Конверсия сайта
-  const reqSiteConv=m.clicks>0?reqDeals/(m.clicks*m.qualShare*m.convQLDeal)*100:0;
-  const convGrowth=u.siteConv>0?((reqSiteConv/u.siteConv-1)*100):0;
-  const convOk=reqSiteConv<=15; // >15% конверсия сайта редко реальна
-  insights.push({type:'siteConv',title:'🌐 Конверсия сайта',
-    text:`Конверсия сайта: <span class="highlight">${u.siteConv}%</span> → <span class="highlight">${reqSiteConv.toFixed(1)}%</span> (+${convGrowth.toFixed(0)}%)`,
-    detail:`При текущем бюджете и CPC это даст ${fmt(reqDeals)} сделок без роста расходов.`,
-    feasible:convOk,
-    note:!convOk?`Конверсия ${reqSiteConv.toFixed(1)}% нереалистична для большинства ниш. Типичный потолок 8-12%.`:'Достижимо: A/B тесты форм, ускорение загрузки, чат-бот, социальные доказательства, ретаргетинг.',
-    recommendation:convGrowth>50?'Фокус на верхних 3 элементах: заголовок, форма, кнопка. Не пытайтесь менять всё сразу.':'Запустите 2-3 A/B теста одновременно: заголовок, CTA, форма. Результат через 2-3 недели.'});
-  
-  // Сценарий 3: Конверсия в сделку (продажи)
-  const reqConvDeal=m.qlFromFunnel>0?reqDeals/m.qlFromFunnel:0;
-  const dealGrowth=m.convQLDeal>0?((reqConvDeal/m.convQLDeal-1)*100):0;
-  const dealOk=reqConvDeal<=0.7;
-  insights.push({type:'convDeal',title:'📞 Конверсия в сделку (РОП)',
-    text:`Конверсия квал.лид → сделка: <span class="highlight">${pct(m.convQLDeal)}</span> → <span class="highlight">${pct(reqConvDeal)}</span> (+${dealGrowth.toFixed(0)}%)`,
-    detail:`При текущем потоке лидов. Контролирует отдел продаж.`,
-    feasible:dealOk,
-    note:!dealOk?`Конверсия ${pct(reqConvDeal)} маловероятна — это почти каждый второй лид. Проверьте реалистичность цели.`:'Достижимо: сокращение времени первого контакта, скрипты, догрев, работа с возражениями.',
-    recommendation:dealGrowth>30?'Внедрите SLA: первый контакт < 5 минут. Это даёт +10-15% конверсии без изменения скриптов.':'Простые шаги: чек-лист квалификации, шаблон КП, напоминания в CRM.'});
-  
-  // Сценарий 4: Снижение CPC
-  const reqCpc=m.clicks>0?m.budget/(reqDeals/(m.qualShare*m.convQLDeal*(u.siteConv/100))):0;
-  const cpcReduction=u.cpc>0?((1-reqCpc/u.cpc)*100):0;
-  const cpcOk=cpcReduction>0&&cpcReduction<=40;
-  insights.push({type:'cpc',title:'💰 Снизить CPC',
-    text:`CPC: <span class="highlight">${money(u.cpc)}</span> → <span class="highlight">${money(reqCpc)}</span> (−${cpcReduction.toFixed(0)}%)`,
-    detail:`При том же бюджете больше кликов → больше лидов и сделок.`,
-    feasible:cpcOk&&reqCpc>5,
-    note:reqCpc<5?`CPC ниже 5₽ невозможен для большинства ниш Директа.`:cpcReduction>40?`Снижение CPC на ${cpcReduction.toFixed(0)}% требует серьёзной реструктуризации кампаний.`:'Достижимо: минус-слова, оптимизация ставок, расширение семантики, улучшение качества объявлений.',
-    recommendation:'Начните с чистки минус-слов и отключения неэффективных площадок РСЯ. Это даёт −10-20% CPC за неделю.'});
-  
-  // Сценарий 5: Комбинированный
-  insights.push({type:'combined',title:'🔀 Комбинированный (рекомендуемый)',
-    text:`Бюджет +20%, конверсия сайта +15%, конверсия продаж +10%, CPC −10%`,
-    detail:`Четыре умеренных улучшения одновременно вместо одного прорыва.`,
-    feasible:true,
-    note:'Каждое улучшение реалистично. Команды работают параллельно: маркетинг, продукт, продажи.',
-    recommendation:'Распределите: маркетолог — бюджет и CPC, продукт — конверсия сайта, РОП — конверсия в сделку. Еженедельный синк.'});
-  
-  return{gap,insights,status:'deficit'};
+  const m=getUnitMetrics();if(!m||!m.revenueKnown||!targetRev||m.revenue<=0)return null;
+  const gap=targetRev-m.revenue;if(gap<=0)return{gap,insights:[],status:'surplus'};
+  const u=S.unit,B=unitEconomyBase(),ratio=targetRev/m.revenue,rel=ratio-1,p90=S.result?.upper||Infinity;
+  const insights=[];
+
+  // 1. Бюджет
+  const reqBudget=m.budget*ratio;
+  let sB=grade(rel,LEVERS.budget);
+  if(reqBudget>p90*1.3)sB='bad';else if(reqBudget>p90&&sB==='ok')sB='hard';
+  const budgetCeil=Math.min(m.budget*(1+LEVERS.budget.ok),p90);
+  insights.push({title:'📈 Увеличить бюджет',status:sB,
+    text:`${money(m.budget)} → <span class="highlight">${money(reqBudget)}</span> (+${rp(rel)})`,
+    ceiling:`Потолок месяца: +30% и не выше P90 истории ≈ ${money(budgetCeil)}`,
+    note:reqBudget>p90?`Выше P90 (${money(p90)}) канал не изучен: CPC и CPQL вырастут, объём лидов не гарантирован.`:rel>LEVERS.budget.ok?'Рост выше +30% за месяц обычно упирается в лимиты кампаний и рост CPC.':null,
+    tip:rel>LEVERS.budget.hard?'Это план масштабирования на 2–3 месяца с еженедельным контролем CPC и предельного CPQL, а не решение на один месяц.':'Шаги +10–15% в неделю с контролем предельного CPQL.'});
+
+  // 2. Конверсия сайта
+  const reqSC=u.siteConv*ratio;
+  let sS=applyAbs(grade(rel,LEVERS.siteConv),reqSC,LEVERS.siteConv,true);
+  insights.push({title:'🌐 Конверсия сайта',status:sS,
+    text:`${u.siteConv}% → <span class="highlight">${reqSC.toFixed(1)}%</span> (+${rp(rel)})`,
+    ceiling:`Потолок месяца: +15–35% относительно → ${ (u.siteConv*1.15).toFixed(1) }–${ (u.siteConv*1.35).toFixed(1) }%`,
+    note:rel>LEVERS.siteConv.hard?`Рост в ${(ratio).toFixed(1)} раза за месяц недостижим: даже редизайн лендинга даёт +20–40% за квартал тестов, а не в 3 раза.`:reqSC>LEVERS.siteConv.absHard?'Целевое значение выше типичного потолка ниши (12–20%).':null,
+    tip:'Реальный темп CRO: 1–2 значимых A/B-теста в месяц, +5–15% к конверсии за тест. Планируйте квартал, не месяц.'});
+
+  // 3. Конверсия в сделку
+  const reqCD=m.convDeal*ratio;
+  let sC=applyAbs(grade(rel,LEVERS.convDeal),reqCD,LEVERS.convDeal,true);
+  insights.push({title:'📞 Конверсия квал. лид → сделка',status:sC,
+    text:`${pct(m.convDeal)} → <span class="highlight">${pct(reqCD)}</span> (+${rp(rel)})`,
+    ceiling:`Потолок месяца: +15–30% относительно → ${pct(m.convDeal*1.15)}–${pct(m.convDeal*1.30)}`,
+    note:rel>LEVERS.convDeal.hard?`Утроить конверсию продаж за месяц невозможно: SLA, скрипты и обучение дают +10–25% за 1–2 месяца.`:reqCD>LEVERS.convDeal.absHard?'Конверсия выше 50–70% означает слишком мягкую квалификацию лидов, а не сильные продажи.':null,
+    tip:'Быстрые +10–15%: первый контакт < 5 минут, чек-лист квалификации, догрев в CRM. Это потолок одного месяца.'});
+
+  // 4. CPC
+  const reqCpc=u.cpc/ratio,red=1-1/ratio;
+  let sP=applyAbs(grade(red,LEVERS.cpc),reqCpc,LEVERS.cpc,false);
+  insights.push({title:'💰 Снизить CPC',status:sP,
+    text:`${money(u.cpc)} → <span class="highlight">${money(reqCpc)}</span> (−${rp(red)})`,
+    ceiling:`Потолок месяца: −10–20% → ${money(u.cpc*0.9)}–${money(u.cpc*0.8)}`,
+    note:red>LEVERS.cpc.hard?`Снижение CPC на ${rp(red)} за месяц нереально: аукцион и качество объявлений движутся медленно.`:reqCpc<LEVERS.cpc.absHard?'Ниже 8–15 ₽ клик в Директе бывает только у сверх-брендовых запросов.':null,
+    tip:'Реальный набор: минус-слова, отключение плохих площадок РСЯ, корректировки ставок — даёт −5–15% за 2–4 недели.'});
+
+  // 5. Чек / LTV (через форму экономики)
+  const reqAmount=B.e.amount*ratio;
+  let sK=grade(rel,LEVERS.check);
+  insights.push({title:'💎 Чек / LTV (в форме экономики)',status:sK,
+    text:`${money(B.e.amount)} → <span class="highlight">${money(reqAmount)}</span> (+${rp(rel)})`,
+    ceiling:`Потолок месяца: +10–25% → ${money(B.e.amount*1.1)}–${money(B.e.amount*1.25)}`,
+    note:rel>LEVERS.check.hard?'Рост чека в разы — это новый продукт или сегмент, а не настройка текущего предложения.':null,
+    tip:'+5–15% без потери конверсии: обязательный апсейл в скрипте, пакетные предложения, порог бесплатной доставки.'});
+
+  // 6. Пакет улучшений
+  const mb=Math.min(1+LEVERS.budget.ok,p90/m.budget);
+  const mult=mb*1.25*1.20*(1/0.9)*1.10;
+  const combRev=m.revenue*mult,cover=combRev/targetRev;
+  const sComb=cover>=1?'ok':cover>=0.8?'hard':'bad';
+  const months=mult>1?Math.ceil(Math.log(ratio)/Math.log(mult)):Infinity;
+  insights.push({title:'🔀 Пакет улучшений (рекомендуемый)',status:sComb,
+    text:`бюджет +${rp(mb-1)}, сайт +25%, продажи +20%, CPC −10%, чек +10%`,
+    ceiling:`Даёт ×${mult.toFixed(2)} к выручке → ${money(combRev)}; закрывает ${rp(Math.min(1,cover))} цели`,
+    note:cover>=1?'Пакет закрывает цель на пределе месячных возможностей: все компоненты на верхних границах реалистичного.':cover>=0.8?'Пакет почти закрывает цель; остаток — резерв повторных продаж или перенос части цели.':'Даже лучший пакет не дотягивает до цели за один месяц — это сигнал, что цель собственнику нужно ставить на горизонт 2–3 месяца.',
+    tip:cover>=1?'Назначьте владельца каждой метрики и сверяйте факты еженедельно.':`В темпе пакета (~+${rp(mult-1)} выручки в месяц) цель достижима примерно за ${months} мес. Обсудите горизонт с собственником или пересмотрите цель.`});
+
+  return{gap,insights,status:'deficit',ratio,months:mult>1?Math.ceil(Math.log(ratio)/Math.log(mult)):null,cover};
 }
 
-// === РЕНДЕР ЮНИТ-ЭКОНОМИКИ ===
+// === Рендер юнит-экономики ===
 function renderUnitEconomics(){
   const m=getUnitMetrics();
   if(!m)return'<section class="panel" style="margin-top:24px"><div class="notice">Сначала загрузите данные и рассчитайте прогноз.</div></section>';
-  const u=S.unit;
+  const u=S.unit,b=unitEconomyBase();
   const goal=u.targetRevenue?analyzeGoal(u.targetRevenue):null;
-  const defaultTarget=u.targetRevenue||m.revenue;
+  const defaultTarget=u.targetRevenue||(m.revenueKnown?m.revenue:0);
   const days=S.result?.range?.days||30;
-  
+
   return`
   <section class="panel" style="margin-top:24px">
     <div class="pagehead">
-      <div>
-        <p class="eyebrow">ПОЛНАЯ ВОРОНКА + ФИНАНСЫ</p>
-        <h2>Юнит-экономика: от клика до прибыли</h2>
-      </div>
+      <div><p class="eyebrow">ПОЛНАЯ ВОРОНКА + ФИНАНСЫ</p><h2>Юнит-экономика: от клика до прибыли</h2></div>
       <span class="badge">⬜ ввод · 🟦 авто · 🟨 выручка</span>
     </div>
-    <p class="hint">Синие значения рассчитываются автоматически. Белые — ваши допущения. Жёлтая — итоговая выручка. Измените любое белое поле → вся модель пересчитается.</p>
-    
+    <p class="hint">Синие значения рассчитываются автоматически. Белые — ваши допущения. Чек, маржа и конверсия в оплату берутся из формы экономики продукта выше — единый источник правды.</p>
+
     <div class="pnl-grid">
-      <!-- ЛЕВАЯ КОЛОНКА: ДОПУЩЕНИЯ -->
       <div class="pnl-card">
-        <h3>⬜ Допущения (вы вводите)</h3>
-        
-        <div class="metric-row section-head">Реклама и трафик</div>
-        <div class="metric-row">
-          <span>CPC (стоимость клика)</span>
-          <div><input type="number" class="pnl-input" value="${u.cpc}" step="1" min="1" onchange="S.unit.cpc=Math.max(1,+this.value);render()"><span class="pnl-input-suffix">₽</span></div>
-        </div>
-        <div class="metric-row">
-          <span>CTR (кликабельность)</span>
-          <div><input type="number" class="pnl-input" value="${u.ctr}" step="0.1" min="0.1" max="50" onchange="S.unit.ctr=Math.max(0.1,+this.value);render()"><span class="pnl-input-suffix">%</span></div>
-        </div>
-        <div class="metric-row">
-          <span>Конверсия сайта (клик→лид)</span>
-          <div><input type="number" class="pnl-input" value="${u.siteConv}" step="0.1" min="0.1" max="50" onchange="S.unit.siteConv=Math.max(0.1,+this.value);render()"><span class="pnl-input-suffix">%</span></div>
-        </div>
-        
-        <div class="metric-row section-head">Продажи</div>
-        <div class="metric-row">
-          <span>Конверсия квал.лид → сделка</span>
-          <div><input type="number" class="pnl-input" value="${(m.convQLDeal*100).toFixed(1)}" step="0.5" min="0.1" max="100" onchange="S.unit.convQLDeal=Math.min(1,Math.max(0,+this.value/100));render()"><span class="pnl-input-suffix">%</span></div>
-        </div>
-        <div class="metric-row">
-          <span>Средний чек</span>
-          <div><input type="number" class="pnl-input" value="${u.check}" step="100" min="0" onchange="S.unit.check=Math.max(0,+this.value);render()"><span class="pnl-input-suffix">₽</span></div>
-        </div>
-        <div class="metric-row">
-          <span>LTV множитель</span>
-          <div><input type="number" class="pnl-input" value="${u.ltvMult}" step="0.1" min="1" max="10" onchange="S.unit.ltvMult=Math.max(1,+this.value);render()"><span class="pnl-input-suffix">×</span></div>
-        </div>
-        
-        <div class="metric-row section-head">Расходы</div>
-        <div class="metric-row">
-          <span>Себестоимость (COGS)</span>
-          <div><input type="number" class="pnl-input" value="${u.cogsPct}" step="1" min="0" max="100" onchange="S.unit.cogsPct=Math.min(100,Math.max(0,+this.value));render()"><span class="pnl-input-suffix">%</span></div>
-        </div>
-        <div class="metric-row">
-          <span>Переменные на сделку</span>
-          <div><input type="number" class="pnl-input" value="${u.varPct}" step="0.5" min="0" max="50" onchange="S.unit.varPct=Math.max(0,+this.value);render()"><span class="pnl-input-suffix">%</span></div>
-        </div>
-        <div class="metric-row">
-          <span>Постоянные расходы / мес</span>
-          <div><input type="number" class="pnl-input" value="${u.fixedCosts}" step="10000" min="0" onchange="S.unit.fixedCosts=Math.max(0,+this.value);render()"><span class="pnl-input-suffix">₽</span></div>
-        </div>
-        
-        <p class="hint" style="margin-top:12px;font-size:12px">Конверсия квал→сделка по умолчанию берётся из прогноза. Задайте вручную, если отдел продаж конвертирует иначе.</p>
+        <h3>⬜ Ввод: трафик и накладные</h3>
+        <div class="metric-row section-head">Трафик Директа</div>
+        <div class="metric-row"><span>CPC (стоимость клика)</span><div><input type="number" class="pnl-input" value="${u.cpc}" min="1" step="1" onchange="S.unit.cpc=Math.max(1,+this.value);render()"><span class="pnl-input-suffix">₽</span></div></div>
+        <div class="metric-row"><span>CTR</span><div><input type="number" class="pnl-input" value="${u.ctr}" min="0.1" max="50" step="0.1" onchange="S.unit.ctr=Math.max(0.1,+this.value);render()"><span class="pnl-input-suffix">%</span></div></div>
+        <div class="metric-row"><span>Конверсия сайта (клик → лид)</span><div><input type="number" class="pnl-input" value="${u.siteConv}" min="0.1" max="50" step="0.1" onchange="S.unit.siteConv=Math.max(0.1,+this.value);render()"><span class="pnl-input-suffix">%</span></div></div>
+        <div class="metric-row"><span>Доля квал. среди лидов</span><div><input type="number" class="pnl-input" value="${(m.qualShare*100).toFixed(1)}" min="0" max="100" step="0.5" onchange="S.unit.qualShare=Math.min(1,Math.max(0,+this.value/100));render()"><span class="pnl-input-suffix">%</span></div></div>
+        <div class="metric-row section-head">Затраты вне рекламы</div>
+        <div class="metric-row"><span>Переменные на сделку</span><div><input type="number" class="pnl-input" value="${u.varPct}" min="0" max="50" step="0.5" onchange="S.unit.varPct=Math.max(0,+this.value);render()"><span class="pnl-input-suffix">%</span></div></div>
+        <div class="metric-row"><span>Постоянные расходы / мес</span><div><input type="number" class="pnl-input" value="${u.fixedCosts}" min="0" step="10000" onchange="S.unit.fixedCosts=Math.max(0,+this.value);render()"><span class="pnl-input-suffix">₽</span></div></div>
+        ${b.first?`<div class="metric-row"><span>Множитель повторных покупок</span><div><input type="number" class="pnl-input" value="${u.ltvMult}" min="1" max="10" step="0.1" onchange="S.unit.ltvMult=Math.max(1,+this.value);render()"><span class="pnl-input-suffix">×</span></div></div>`:''}
+        <div class="metric-row section-head">🟦 Из формы экономики (менять там)</div>
+        <div class="metric-row"><span>${b.first?'Средний чек':'LTV на клиента'}</span><span class="cell-blue">${money(b.e.amount)}</span></div>
+        <div class="metric-row"><span>Маржинальность</span><span class="cell-blue">${b.e.mode==='ltv_profit'?'—':pct(b.e.margin)}</span></div>
+        <div class="metric-row"><span>Конверсия квал. → оплата</span><span class="cell-blue">${pct(b.convDeal)}</span></div>
+        <div class="metric-row"><span>Вклад на сделку</span><span class="cell-blue">${money(b.grossPerDeal)}</span></div>
+        <button type="button" data-open-economy style="margin-top:12px;width:100%">Изменить чек, маржу, конверсию</button>
       </div>
 
-      <!-- ПРАВАЯ КОЛОНКА: ВОРОНКА + P&L -->
       <div class="pnl-card">
-        <h3>🟦 Воронка (авто-расчёт из бюджета ${money(m.budget)})</h3>
-        
-        <div class="metric-row">
-          <span>Показы</span>
-          <span class="cell-blue">${fmt(m.impressions)}</span>
-        </div>
+        <h3>🟦 Воронка (бюджет ${money(m.budget)})</h3>
+        <div class="metric-row"><span>Показы</span><span class="cell-blue">${fmt(m.impressions)}</span></div>
         <div class="funnel-arrow">↓ × CTR ${u.ctr}%</div>
-        <div class="metric-row">
-          <span>Клики</span>
-          <span class="cell-blue">${fmt(m.clicks)}</span>
-        </div>
+        <div class="metric-row"><span>Клики</span><span class="cell-blue">${fmt(m.clicks)}</span></div>
         <div class="funnel-arrow">↓ × конверсия сайта ${u.siteConv}%</div>
-        <div class="metric-row">
-          <span>Лиды (из воронки)</span>
-          <span class="cell-blue">${fmt(m.leadsFromFunnel)}</span>
-        </div>
-        <div class="metric-row" style="font-size:12px;color:var(--mut)">
-          <span style="font-size:12px">Лиды (из модели прогноза)</span>
-          <span class="cell-blue" style="font-size:12px">${fmt(m.leadsFromModel)}</span>
-        </div>
+        <div class="metric-row"><span>Лиды (воронка)</span><span class="cell-blue">${fmt(m.leadsFunnel)}</span></div>
+        <div class="metric-row" style="font-size:12px;color:var(--mut)"><span style="font-size:12px">Лиды (модель прогноза)</span><span class="cell-blue" style="font-size:12px">${fmt(m.leadsModel)}</span></div>
         <div class="funnel-arrow">↓ × доля квал. ${pct(m.qualShare)}</div>
-        <div class="metric-row">
-          <span>Квал. лиды</span>
-          <span class="cell-blue">${fmt(m.qlFromFunnel)}</span>
-        </div>
-        <div class="funnel-arrow">↓ × конверсия в сделку ${pct(m.convQLDeal)}</div>
-        <div class="metric-row">
-          <span>Сделки</span>
-          <span class="cell-blue">${fmt(m.deals)}</span>
-        </div>
-        <div class="funnel-arrow">↓ × чек ${money(u.check)} × LTV ${u.ltvMult}</div>
-        
+        <div class="metric-row"><span>Квал. лиды</span><span class="cell-blue">${fmt(m.qlFunnel)}</span></div>
+        <div class="funnel-arrow">↓ × конверсия в оплату ${pct(m.convDeal)}</div>
+        <div class="metric-row"><span>Сделки</span><span class="cell-blue">${fmt(m.deals)}</span></div>
         <div class="metric-row highlight-row">
-          <span style="font-weight:700">💰 ВЫРУЧКА</span>
-          <span class="cell-yellow">${money(m.revenue)}</span>
+          <span style="font-weight:700">${m.revenueKnown?'💰 ВЫРУЧКА':'💰 МАРЖ. ПРИБЫЛЬ КОГОРТЫ'}</span>
+          <span class="cell-yellow">${m.revenueKnown?money(m.revenue):money(m.grossProfit)}</span>
         </div>
-        
         <div class="metric-row section-head">P&L</div>
-        <div class="metric-row"><span>− Себестоимость (${u.cogsPct}%)</span><span class="cell-blue">−${money(m.cogs)}</span></div>
-        <div class="metric-row"><span>− Переменные (${u.varPct}%)</span><span class="cell-blue">−${money(m.varCosts)}</span></div>
-        <div class="metric-row total"><span>Валовая прибыль</span><span class="${m.grossProfit>=0?'cell-green':'cell-red'}">${money(m.grossProfit)}</span></div>
+        <div class="metric-row"><span>− Переменные на сделки (${u.varPct}%)</span><span class="cell-blue">−${money(m.varCosts)}</span></div>
+        <div class="metric-row total"><span>Маржинальная прибыль</span><span class="${m.grossProfit>=0?'cell-green':'cell-red'}">${money(m.grossProfit)}</span></div>
         <div class="metric-row"><span>− Реклама (бюджет)</span><span class="cell-blue">−${money(m.marketingCost)}</span></div>
         <div class="metric-row"><span>− Постоянные расходы</span><span class="cell-blue">−${money(u.fixedCosts)}</span></div>
         <div class="metric-row total"><span>🏁 ЧИСТАЯ ПРИБЫЛЬ</span><span class="${m.netProfit>=0?'cell-green':'cell-red'}" style="font-size:20px">${money(m.netProfit)}</span></div>
         <div class="metric-row"><span>ROMI</span><span class="${m.romi>=0?'cell-green':'cell-red'}">${m.romi.toFixed(0)}%</span></div>
-        <div class="metric-row"><span>Маржинальность</span><span class="${m.marginPct>=0?'cell-green':'cell-red'}">${m.marginPct.toFixed(1)}%</span></div>
-        
         <div class="metric-row section-head">Стоимости</div>
-        <div class="metric-row"><span>CPC (факт/план)</span><span class="cell-blue">${money(u.cpc)}</span></div>
-        <div class="metric-row"><span>CPL (стоимость лида)</span><span class="cell-blue">${money(m.clicks>0&&u.siteConv>0?u.cpc/(u.siteConv/100):0)}</span></div>
-        <div class="metric-row"><span>CPQL (из прогноза)</span><span class="cell-blue">${money(m.cpql)}</span></div>
-        <div class="metric-row"><span>CAC (стоимость клиента)</span><span class="cell-blue">${money(m.deals>0?m.budget/m.deals:0)}</span></div>
+        <div class="metric-row"><span>CPL (клик → лид)</span><span class="cell-blue">${money(u.siteConv>0?u.cpc/(u.siteConv/100):0)}</span></div>
+        <div class="metric-row"><span>CPQL (модель прогноза)</span><span class="cell-blue">${money(m.cpql)}</span></div>
+        <div class="metric-row"><span>CAC (стоимость сделки)</span><span class="cell-blue">${money(m.deals>0?m.budget/m.deals:0)}</span></div>
       </div>
     </div>
-    
-    <!-- ЦЕЛЬ СОБСТВЕННИКА -->
+
     <div style="margin-top:24px">
       <h3>🎯 Цель собственника по выручке</h3>
-      <p class="hint">Укажите желаемую выручку — система покажет, какие метрики нужно подтянуть и реалистично ли это.</p>
-      
+      ${m.revenueKnown?`
+      <p class="hint">Статусы оценивают <b>относительный размер требуемого изменения за один месяц</b>: зелёный — обычная рабочая динамика, жёлтый — потолок месяца, красный — недостижимо без смены продукта или горизонта планирования.</p>
       <div class="goal-slider">
         <label>Целевая выручка: <span class="goal-value">${money(defaultTarget)}</span></label>
         <input type="range" min="${Math.round(m.revenue*0.5)}" max="${Math.round(m.revenue*3)}" step="${Math.max(10000,Math.round(m.revenue*0.02))}" value="${defaultTarget}" oninput="S.unit.targetRevenue=+this.value;render()">
         <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mut);margin-top:4px">
-          <span>${money(Math.round(m.revenue*0.5))}</span>
-          <span>Текущий: ${money(m.revenue)}</span>
-          <span>${money(Math.round(m.revenue*3))}</span>
+          <span>${money(Math.round(m.revenue*0.5))}</span><span>Текущий: ${money(m.revenue)}</span><span>${money(Math.round(m.revenue*3))}</span>
         </div>
       </div>
-
       ${goal&&goal.status==='surplus'?`
         <div class="advisor" style="border-left-color:var(--green)">
           <h4 style="color:var(--green)">✅ Цель достигнута</h4>
@@ -594,33 +512,34 @@ function renderUnitEconomics(){
         </div>
       `:goal&&goal.status==='deficit'?`
         <div class="advisor">
-          <h4>📊 Дефицит: ${money(goal.gap)} до цели</h4>
-          <p style="margin-bottom:14px">Что нужно изменить. Зелёное — реалистично за 1 месяц. Красное — требует прорыва или нереалистично.</p>
+          <h4>📊 Дефицит: ${money(goal.gap)} · выручка должна вырасти в ${goal.ratio.toFixed(2)} раза</h4>
           <table class="scenarios-table">
-            <thead><tr><th>Рычаг</th><th>Изменение</th><th>Статус</th></tr></thead>
+            <thead><tr><th>Рычаг</th><th>Требуется</th><th>Потолок за 1 месяц</th><th>Шансы</th></tr></thead>
             <tbody>
               ${goal.insights.map(i=>`<tr>
                 <td style="font-weight:600">${i.title}</td>
                 <td>${i.text}</td>
-                <td><span class="scenario-status ${i.feasible?'status-ok':'status-bad'}">${i.feasible?'Реалистично':'Прорыв'}</span></td>
+                <td style="color:var(--mut);font-size:12px">${i.ceiling}</td>
+                <td><span class="scenario-status status-${i.status}">${STATUS_LABEL[i.status]}<br>${CHANCE[i.status]}</span></td>
               </tr>`).join('')}
             </tbody>
           </table>
           <div style="margin-top:20px">
-            <h4 style="font-size:14px;margin-bottom:10px">💡 Детальные рекомендации</h4>
+            <h4 style="font-size:14px;margin-bottom:10px">💡 Разбор рычагов</h4>
             <ul>
               ${goal.insights.map(i=>`<li>
-                <b>${i.title}</b> — ${i.detail}
-                ${i.note?`<span class="${i.feasible?'recommendation':'warning'}">${i.note}</span>`:''}
-                <span class="recommendation">→ ${i.recommendation}</span>
+                <b>${i.title}.</b> ${i.text}.
+                <span class="ceiling">${i.ceiling}. ${CHANCE[i.status]}.</span>
+                ${i.note?`<span class="${i.status==='bad'?'warning':'recommendation'}">${i.note}</span>`:''}
+                <span class="recommendation">→ ${i.tip}</span>
               </li>`).join('')}
             </ul>
           </div>
+          ${goal.months?`<p style="margin-top:14px;font-size:13px;color:var(--mut)">Вывод: при лучшем реалистичном пакете (~+${rp(Math.pow(goal.ratio,1/goal.months)-1)} выручки в месяц) цель достижима примерно за <b>${goal.months} мес</b>. Один месяц — нереалистичный горизонт для такой цели.</p>`:''}
         </div>
-      `:''}
+      `:''}`:`<div class="notice warn">Для цели по выручке переключите базу экономики на «Первая покупка» или «LTV — выручка»: в режиме маржинальной прибыли выручка не определяется.</div>`}
     </div>
-    
-    <!-- ДНЕВНЫЕ НОРМЫ -->
+
     <div style="margin-top:24px">
       <h3>📋 Дневные нормы для контроля (${days} дней)</h3>
       <div class="twocol">
@@ -628,24 +547,36 @@ function renderUnitEconomics(){
           <h3 style="font-size:13px">Маркетинг</h3>
           <div class="metric-row"><span>Бюджет / день</span><span class="cell-blue">${money(m.budget/days)}</span></div>
           <div class="metric-row"><span>Клики / день</span><span class="cell-blue">${fmt(m.clicks/days)}</span></div>
-          <div class="metric-row"><span>Лиды / день</span><span class="cell-blue">${fmt(m.leadsFromFunnel/days)}</span></div>
+          <div class="metric-row"><span>Лиды / день</span><span class="cell-blue">${fmt(m.leadsFunnel/days)}</span></div>
           <div class="metric-row"><span>Макс. CPC</span><span class="cell-blue">${money(u.cpc)}</span></div>
         </div>
         <div class="pnl-card">
           <h3 style="font-size:13px">Продажи (РОП)</h3>
-          <div class="metric-row"><span>Квал. лиды / день</span><span class="cell-blue">${fmt(m.qlFromFunnel/days)}</span></div>
+          <div class="metric-row"><span>Квал. лиды / день</span><span class="cell-blue">${fmt(m.qlFunnel/days)}</span></div>
           <div class="metric-row"><span>Сделки / день</span><span class="cell-blue">${fmt(m.deals/days)}</span></div>
-          <div class="metric-row"><span>Выручка / день</span><span class="cell-blue">${money(m.revenue/days)}</span></div>
-          <div class="metric-row"><span>Мин. конверсия</span><span class="cell-blue">${pct(m.convQLDeal)}</span></div>
+          <div class="metric-row"><span>Выручка / день</span><span class="cell-blue">${m.revenueKnown?money(m.revenue/days):'—'}</span></div>
+          <div class="metric-row"><span>Мин. конверсия в оплату</span><span class="cell-blue">${pct(m.convDeal)}</span></div>
         </div>
       </div>
     </div>
   </section>`;
 }
 
-function economyView(){const d=S.economyDraft,first=d.mode==='first',profit=d.mode==='ltv_profit';return`<div class="pagehead"><div><p class="eyebrow">ОТ ЭКОНОМИКИ ПРОДУКТА К ЛИМИТАМ РЕКЛАМЫ</p><h2>Автоматические CPQL и CPL</h2></div><span class="badge">Поля можно менять</span></div><div id="economy-results">${economyResults()}</div><form id="economy-form" class="panel"><h3>Экономика платящего клиента</h3><label for="econ-mode">На какой базе считать лимиты</label><select id="econ-mode" data-econ="mode"><option value="first" ${first?'selected':''}>Первая оплаченная покупка</option><option value="ltv_revenue" ${d.mode==='ltv_revenue'?'selected':''}>LTV — выручка за выбранный период</option><option value="ltv_profit" ${profit?'selected':''}>LTV — маржинальная прибыль за период</option></select><div class="econ-fields">${first?economyField('check','Средний оплаченный чек, ₽',{required:true,help:'После скидок и возвратов, на той же налоговой базе, что маржа и spend.'})+economyField('margin','Маржинальность до рекламы, %',{required:true,max:100,help:'Сейчас 49% учитывают только себестоимость.'}):economyField(profit?'ltvProfit':'ltv',profit?'Маржинальная прибыль LTV на клиента, ₽':'Выручка LTV на клиента, ₽',{required:true})+(profit?'':economyField('ltvMargin','Маржинальность выручки LTV, %',{required:true,max:100}))}${economyField('conversion','Квал. лид → оплаченный клиент, %',{required:true,max:100})}${economyField('reserve','Сохранить маржинальной прибыли после привлечения, %',{max:100})}</div><h3>Переменные затраты сверх указанной маржи</h3><p class="muted small">Указывайте только расходы, которые ещё не вычтены.</p><div class="econ-fields">${economyField('customerCost','Дополнительные затраты на клиента, ₽')}${economyField('leadCost','Обработка каждого лида, ₽')}${economyField('qualifiedCost','Доп. обработка квал. лида, ₽')}${economyField('overhead','Расходы сверх spend, %',{max:1000})}${economyField('qualification','Доля квал. лидов, %',{max:100,disabled:!!S.result,value:S.result?(100*economyRatio()).toFixed(2):null})}</div><label class="economy-check"><input id="econ-costsComplete" data-econ="costsComplete" type="checkbox" ${d.costsComplete?'checked':''}>Все прочие переменные затраты учтены</label><p id="economy-dirty" class="hint" ${S.economyDirty?'':'hidden'}>Есть неприменённые изменения.</p><button class="primary" type="submit">Пересчитать лимиты и бюджет</button></form>`}
-function economyResults(){const e=S.economy;if(!e)return'';const c=BC.caps(e,economyRatio());return`${!e.costsComplete?'<div class="notice warn"><b>Предварительные лимиты.</b></div>':''}<div class="kpis">${kpi('CPQL безубыточности',money(c.breakEven.cpql),'После учтённых переменных затрат',true)}${kpi('Рабочий лимит CPQL',money(c.working.cpql),`Сохранить ${pct(e.reserve)} прибыли`)}${kpi('Рабочий лимит CPL',money(c.working.cpl),c.ratio===null?'Нужна доля квал. лидов':`Доля квал. ${pct(c.ratio)}`)}</div><section class="panel">${row('Вклад клиента',money(e.contribution))}${row('Конверсия квал→оплата',pct(e.conversion))}${row('Основа',e.mode==='first'?'Первая покупка':`LTV ${e.months} мес.`)}${S.result?.business?`<div class="rule"></div>${row('Бюджет остановки роста',budgetLabel(S.result.business.working))}`:''}</section>`}
-function budgetLabel(b){if(b.status==='found')return money(b.budget);if(b.status==='not_reached')return'Выше '+money(b.budget);return{unidentified:'Не определён',no_solution:'Нет решения',below_range:'Ниже диапазона',flat:'Нет точки'}[b.status]||'—'}
+function economyView(){const d=S.economyDraft,first=d.mode==='first',profit=d.mode==='ltv_profit';return`<div class="pagehead"><div><p class="eyebrow">ОТ ЭКОНОМИКИ ПРОДУКТА К ЛИМИТАМ РЕКЛАМЫ</p><h2>Автоматические CPQL и CPL</h2></div><span class="badge">Поля можно менять</span></div><div id="economy-results">${economyResults()}</div><form id="economy-form" class="panel"><h3>Экономика платящего клиента</h3><label for="econ-mode">На какой базе считать лимиты</label><select id="econ-mode" data-econ="mode"><option value="first" ${first?'selected':''}>Первая оплаченная покупка</option><option value="ltv_revenue" ${d.mode==='ltv_revenue'?'selected':''}>LTV — выручка за выбранный период</option><option value="ltv_profit" ${profit?'selected':''}>LTV — маржинальная прибыль за период</option></select><div class="econ-fields">${first?economyField('check','Средний оплаченный чек, ₽',{required:true,help:'После скидок и возвратов.'})+economyField('margin','Маржинальность до рекламы, %',{required:true,max:100}):economyField(profit?'ltvProfit':'ltv',profit?'Маржинальная прибыль LTV на клиента, ₽':'Выручка LTV на клиента, ₽',{required:true})+(profit?'':economyField('ltvMargin','Маржинальность выручки LTV, %',{required:true,max:100}))}${economyField('conversion','Квал. лид → оплаченный клиент, %',{required:true,max:100})}${economyField('reserve','Сохранить маржинальной прибыли, %',{max:100})}</div><h3>Переменные затраты сверх маржи</h3><div class="econ-fields">${economyField('customerCost','Доп. затраты на клиента, ₽')}${economyField('leadCost','Обработка каждого лида, ₽')}${economyField('qualifiedCost','Доп. обработка квал. лида, ₽')}${economyField('overhead','Расходы сверх spend, %',{max:1000})}${economyField('qualification','Доля квал. лидов, %',{max:100,disabled:!!S.result,value:S.result?(100*economyRatio()).toFixed(2):null})}</div><label class="economy-check"><input id="econ-costsComplete" data-econ="costsComplete" type="checkbox" ${d.costsComplete?'checked':''}>Все прочие переменные затраты учтены</label><p id="economy-dirty" class="hint" ${S.economyDirty?'':'hidden'}>Есть неприменённые изменения.</p><button class="primary" type="submit">Пересчитать лимиты и бюджет</button></form>`}
+function economyResults(){const e=S.economy;if(!e)return'';const c=BC.caps(e,economyRatio());
+const perQL=e.contribution*e.conversion,cpqlNow=S.result?.current?.cpql??null,biz=S.result?.business?.working;
+return`${!e.costsComplete?'<div class="notice warn"><b>Предварительные лимиты:</b> полнота переменных затрат не подтверждена.</div>':''}
+<div class="kpis">${kpi('CPQL безубыточности',money(c.breakEven.cpql),'После учтённых переменных затрат',true)}${kpi('Рабочий лимит CPQL',money(c.working.cpql),`Сохранить ${pct(e.reserve)} прибыли`)}${kpi('Рабочий лимит CPL',money(c.working.cpl),c.ratio===null?'Нужна доля квал. лидов':`Доля квал. ${pct(c.ratio)}`)}</div>
+<section class="panel">
+${row('Вклад одного платящего клиента (до рекламы)',money(e.contribution))}
+${row('Вклад одного квал. лида',money(perQL))}
+${row('Конверсия квал. лид → оплата',pct(e.conversion))}
+${row('Основа расчёта',e.mode==='first'?'Первая покупка':`LTV · ${e.months} мес.`)}
+${cpqlNow!==null?row('Прогнозный CPQL месяца',money(cpqlNow)+(perQL>0?(cpqlNow>perQL?' — выше вклада квал. лида':' — ниже вклада квал. лида'):'')):''}
+${biz?row('Бюджет остановки роста',budgetLabel(biz))+`<p class="hint">${budgetExplanation(biz)}${biz.status==='no_solution'&&perQL>0&&cpqlNow!==null?` При прогнозном CPQL ${money(cpqlNow)} каждый квал. лид приносит лишь ${money(perQL)} вклада: в изученном диапазоне реклама не окупается ни при каком бюджете. Снижайте CPQL или пересмотрите экономику.`:''}</p>`:''}
+</section>`}
+function budgetLabel(b){if(b.status==='found')return money(b.budget);if(b.status==='not_reached')return'Выше '+money(b.budget);return{unidentified:'Не определён',no_solution:'Не найден (экономика не окупает рекламу)',below_range:'Ниже изученного диапазона',flat:'Единственной точки нет'}[b.status]||'—'}
+function budgetExplanation(b){return{found:'Расчётная точка внутри диапазона истории.',not_reached:'На верхней границе истории лимит ещё не достигнут.',no_solution:'В изученном диапазоне заданная экономика не окупает расходы.',below_range:'Оптимум ниже изученного диапазона.',unidentified:'Недостаточно независимых изменений расходов.',flat:'Модель не выделяет единственный оптимум.'}[b.status]}
 function businessForecastBlock(){if(!S.result?.business)return'';const p=S.result.current,b=S.result.business;return`<section class="panel"><div class="row"><h3>Сравнение с экономикой</h3><button data-open-economy>Изменить экономику</button></div><div class="twocol"><div>${row('Рабочий лимит CPQL',money(p.caps.working.cpql))}${row('Прогноз CPL / лимит',`${money(p.cpl)} / ${money(p.caps.working.cpl)}`)}${row('Вклад когорты',money(p.profit))}</div><div>${row('Платящие клиенты',fmt(p.sales))}${row('Бюджет остановки роста',budgetLabel(b.working))}${row('Запас сверх прибыли',money(p.workingSurplus))}</div></div></section>`}
 function readEconomyDraft(){document.querySelectorAll('[data-econ]').forEach(el=>S.economyDraft[el.dataset.econ]=el.type==='checkbox'?el.checked:el.value)}
 function normalizeDraft(){const d=S.economyDraft,frac=x=>x===''?'':Number(x)/100;return BC.normalize({mode:d.mode,amount:d.mode==='first'?d.check:d.mode==='ltv_profit'?d.ltvProfit:d.ltv,margin:d.mode==='first'?frac(d.margin):frac(d.ltvMargin),conversion:frac(d.conversion),reserve:frac(d.reserve),months:d.months,leadCost:d.leadCost,qualifiedCost:d.qualifiedCost,customerCost:d.customerCost,overhead:frac(d.overhead),qualification:d.qualification===''?null:frac(d.qualification),costsComplete:d.costsComplete})}
@@ -674,7 +605,7 @@ function forecastView(){const r=S.result,a=S.analysis,c=r.current;const history=
 function limitsView(){const r=S.result;if(!r)return'';if(r.business){const b=r.business,plan=b.working.point,p=r.current;return head('Бюджет и лиды',esc(monthName(r.range.key)).toUpperCase())+notices()+`<div class="kpis">${kpi('Бюджет остановки роста',budgetLabel(b.working),'По рабочей прибыли',true)}${kpi('Квал. лиды',plan?fmt(plan.q):'—','При рабочем бюджете')}${kpi('CPQL',plan?money(plan.cpql):'—','При рабочем бюджете')}</div><section class="panel"><h3>Три ориентира</h3><div class="tablewrap"><table><thead><tr><th>Ориентир</th><th>Бюджет</th><th>Квал.</th><th>CPQL</th></tr></thead><tbody>${[[b.working,'Остановка роста'],[b.profitPeak,'Максимум прибыли'],[b.wholeChannel,'Окупаемость канала']].map(([x,t])=>`<tr><td>${t}</td><td>${budgetLabel(x)}</td><td>${x.point?fmt(x.point.q):'—'}</td><td>${x.point?money(x.point.cpql):'—'}</td></tr>`).join('')}</tbody></table></div></section><section class="panel"><h3>CPQL по бюджету</h3>${plot([{name:'Средний',points:r.grid.filter(p=>p.cpql!==null).map(p=>({x:p.budget,y:p.cpql})),color:'#476c93'},{name:'Предельный',points:r.grid.filter(p=>p.marginal!==null).map(p=>({x:p.budget,y:p.marginal}))}],{xLabel:'Бюджет',yLabel:'CPQL'})}</section>`}
 const c=r.limit;return head('Бюджет и потолок лидов',esc(monthName(r.range.key)).toUpperCase())+notices()+`<div class="kpis">${kpi('Верхняя граница (P90)',money(r.upper),'× дни / 7',true)}${kpi('Квал. на границе',fmt(c.q),`CPQL ${money(c.cpql)}`)}${kpi('Все лиды',fmt(c.leads),'На границе')}</div>`}
 function qualityView(){const a=S.analysis,r=S.result,q=a.q,m=a.metrics;return head('Проверка модели',`${a.rowCount} НЕДЕЛЬ · ${a.folds} МЕСЯЦЕВ`)+notices()+`<div class="kpis">${kpi('WAPE',pct(m.wape),`${m.n} месяцев проверки`,true)}${kpi('Ошибка CPQL',money(r.cpqlMAE),`${r.cpqlBacktestN} месяцев`)}${kpi('Покрытие 80%',pct(a.cal.coverage),`${a.cal.n} проверок`)}</div><section class="panel"><h3>Факт vs Прогноз</h3>${plot([{name:'Факт',points:q.prequential.map((p,i)=>({x:i,y:p.actual})),color:'#476c93'},{name:'Прогноз',points:q.prequential.map((p,i)=>({x:i,y:p.predicted}))}],{xLabel:'Месяц',yLabel:'Квал. лиды',xFormat:v=>q.prequential[Math.round(v)]?.month.slice(2)||''})}</section><section class="panel"><h3>Модели</h3><div class="tablewrap"><table><thead><tr><th>Модель</th><th>WAPE</th><th>MAE</th><th>Статус</th></tr></thead><tbody>${q.rankings.map(x=>`<tr class="${q.id===x.id?'selected':''}"><td>${esc(x.name)}</td><td>${pct(x.wape)}</td><td>${fmt(x.mae)}</td><td>${q.id===x.id?'✓':''}</td></tr>`).join('')}</tbody></table></div></section>`}
-function methodView(){return`<div class="pagehead"><div><p class="eyebrow">МЕТОДИКА</p><h2>Как устроен расчёт</h2></div></div><section class="panel method"><h3>Модели</h3><p>8 кандидатов: 2 базы (8 и 26 недель) + 6 регрессий (линейная, степенная, насыщение × тренд/сезонность). Пуассоновская квазирегрессия с регуляризацией. Выбор по WAPE на последовательной кросс-валидации.</p><h3>Воронка в юнит-экономике</h3><p>Бюджет ÷ CPC = Клики × CTR = Показы. Клики × конверсия сайта = Лиды × доля квал. = Квал. лиды × конверсия в сделку = Сделки × чек × LTV = Выручка. Все белые поля редактируемы, синие считаются автоматически.</p><h3>Советник</h3><p>При дефиците выручки система считает, какое изменение каждого параметра (бюджет, CPC, конверсия сайта, конверсия продаж, чек) закроет разрыв. Проверяет реалистичность: CPC не ниже 5₽, конверсия сайта не выше 15%, конверсия продаж не выше 70%. Если требуемое изменение нереалистично — помечает красным.</p></section>`}
+function methodView(){return`<div class="pagehead"><div><p class="eyebrow">МЕТОДИКА</p><h2>Как устроен расчёт</h2></div></div><section class="panel method"><h3>Модели прогноза</h3><p>8 кандидатов: 2 базы (8 и 26 недель) + 6 регрессий (линейная, степенная, насыщение × тренд/сезонность). Пуассоновская квазирегрессия с регуляризацией. Выбор по WAPE на последовательной кросс-валидации.</p><h3>Воронка юнит-экономики</h3><p>Бюджет ÷ CPC = клики; клики × конверсия сайта = лиды; × доля квал.; × конверсия в оплату (из формы экономики) = сделки; × чек × множитель повторов = выручка. Чек, маржа и конверсия в оплату — единый источник из формы экономики продукта.</p><h3>Оценка реалистичности рычагов</h3><p>Каждый рычаг оценивается по относительному изменению за один месяц: бюджет ≤ +30% (и в пределах P90 истории), конверсия сайта ≤ +15%, конверсия продаж ≤ +15%, CPC ≥ −10%, чек ≤ +10% — зона «реалистично»; до +60% / +35% / +30% / −20% / +25% — «на пределе»; выше — «нереально за месяц». Дополнительно проверяются абсолютные потолки: конверсия сайта > 20%, конверсия продаж > 70%, CPC < 8 ₽, бюджет > P90×1,3. Пакетный сценарий combines верхние границы реалистичного и показывает долю закрытия цели и горизонт в месяцах.</p><h3>Границы метода</h3><p>Зоны реалистичности — экспертные ориентиры по типовой практике CRO/продаж/PPC, а не статистическая гарантия. Фактическая динамика зависит от ниши, сезона и команды.</p></section>`}
 function render(){if(S.busy)return;economySidebar();$$('.tab').forEach(x=>{const on=x.dataset.tab===S.tab;x.classList.toggle('on',on);x.setAttribute('aria-current',on?'page':'false')});
 let content='';
 if(S.tab==='economy')content=economyView()+renderUnitEconomics();
